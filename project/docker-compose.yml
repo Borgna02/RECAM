@@ -1,0 +1,59 @@
+services: 
+  broker:
+    image: eclipse-mosquitto:2.0.20
+    container_name: broker
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - ./mosquitto/config:/mosquitto/config
+      - ./mosquitto/data:/mosquitto/data
+      - ./mosquitto/log:/mosquitto/log
+    networks:
+      - recam_network
+  knowledge:
+    image: influxdb:2.7.10
+    container_name: knowledge
+    ports:
+      - "8086:8086"
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=admin
+      - DOCKER_INFLUXDB_INIT_PASSWORD=recam123
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=token
+      - DOCKER_INFLUXDB_INIT_ORG=RECAM
+      - DOCKER_INFLUXDB_INIT_BUCKET=production
+    volumes:
+      - knowledge_v:/var/lib/influxdb2
+    networks:
+      - recam_network
+
+  monitor:
+    image: telegraf:1.32.3
+    container_name: monitor
+    depends_on:
+      - broker
+      - knowledge
+    volumes:
+      - ./telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+    networks:
+      - recam_network
+
+  sensors:
+    build:
+      context: ./sensors
+    container_name: sensors
+    depends_on:
+      - broker
+    networks:
+      - recam_network
+    volumes:
+      - ./recam-config:/app/config
+
+
+volumes:
+  knowledge_v: 
+    name: knowledge_v
+
+networks:
+  recam_network:

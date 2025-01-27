@@ -1,0 +1,538 @@
+1738004019: mosquitto version 2.0.20 starting
+1738004019: Config loaded from /mosquitto/config/mosquitto.conf.
+1738004019: Opening ipv4 listen socket on port 1883.
+1738004019: Opening ipv6 listen socket on port 1883.
+1738004019: mosquitto version 2.0.20 running
+1738004024: mosquitto version 2.0.20 terminating
+1738004024: Saving in-memory database to /mosquitto/data//mosquitto.db.
+1738006040: mosquitto version 2.0.20 starting
+1738006040: Config loaded from /mosquitto/config/mosquitto.conf.
+1738006040: Opening ipv4 listen socket on port 1883.
+1738006040: Opening ipv6 listen socket on port 1883.
+1738006040: mosquitto version 2.0.20 running
+1738006321: mosquitto version 2.0.20 terminating
+1738006321: Saving in-memory database to /mosquitto/data//mosquitto.db.
+1738006326: mosquitto version 2.0.20 starting
+1738006326: Config loaded from /mosquitto/config/mosquitto.conf.
+1738006326: Opening ipv4 listen socket on port 1883.
+1738006326: Opening ipv6 listen socket on port 1883.
+1738006326: mosquitto version 2.0.20 running
+1738006408: mosquitto version 2.0.20 terminating
+1738006408: Saving in-memory database to /mosquitto/data//mosquitto.db.
+1738006411: mosquitto version 2.0.20 starting
+1738006411: Config loaded from /mosquitto/config/mosquitto.conf.
+1738006411: Opening ipv4 listen socket on port 1883.
+1738006411: Opening ipv6 listen socket on port 1883.
+1738006411: mosquitto version 2.0.20 running
+1738006461: mosquitto version 2.0.20 terminating
+1738006461: Saving in-memory database to /mosquitto/data//mosquitto.db.
+1738006465: mosquitto version 2.0.20 starting
+1738006465: Config loaded from /mosquitto/config/mosquitto.conf.
+1738006465: Opening ipv4 listen socket on port 1883.
+1738006465: Opening ipv6 listen socket on port 1883.
+1738006465: mosquitto version 2.0.20 running
+1738006465: New connection from 172.18.0.4:58840 on port 1883.
+1738006465: New client connected from 172.18.0.4:58840 as Telegraf-Consumer-3sfy9 (p2, c1, k60).
+1738006465: New connection from 172.18.0.4:58846 on port 1883.
+1738006465: New client connected from 172.18.0.4:58846 as Telegraf-Consumer-wxh7l (p2, c1, k60).
+1738007369: Client Telegraf-Consumer-3sfy9 disconnected.
+1738007369: Client Telegraf-Consumer-wxh7l disconnected.
+1738007369: mosquitto version 2.0.20 terminating
+1738007369: Saving in-memory database to /mosquitto/data//mosquitto.db.
+1738007387: mosquitto version 2.0.20 starting
+1738007387: Config loaded from /mosquitto/config/mosquitto.conf.
+1738007387: Opening ipv4 listen socket on port 1883.
+1738007387: Opening ipv6 listen socket on port 1883.
+1738007387: mosquitto version 2.0.20 running
+1738007388: New connection from 172.18.0.5:52350 on port 1883.
+1738007388: New client connected from 172.18.0.5:52350 as Telegraf-Consumer-LgHGL (p2, c1, k60).
+1738007388: New connection from 172.18.0.5:52352 on port 1883.
+1738007388: New client connected from 172.18.0.5:52352 as Telegraf-Consumer-1E2sy (p2, c1, k60).
+1738007410: Client Telegraf-Consumer-LgHGL disconnected.
+1738007410: Client Telegraf-Consumer-1E2sy disconnected.
+1738007410: mosquitto version 2.0.20 terminating
+1738007410: Saving in-memory database to /mosquitto/data//mosquitto.db.
+1738007415: mosquitto version 2.0.20 starting
+1738007415: Config loaded from /mosquitto/config/mosquitto.conf.
+1738007415: Opening ipv4 listen socket on port 1883.
+1738007415: Opening ipv6 listen socket on port 1883.
+1738007415: mosquitto version 2.0.20 running
+1738007416: New connection from 172.18.0.2:44524 on port 1883.
+1738007416: New client connected from 172.18.0.2:44524 as Telegraf-Consumer-MatXn (p2, c1, k60).
+1738007416: New connection from 172.18.0.2:44532 on port 1883.
+1738007416: New client connected from 172.18.0.2:44532 as Telegraf-Consumer-bhX3T (p2, c1, k60).
+1738007452: Client Telegraf-Consumer-MatXn disconnected.
+1738007452: Client Telegraf-Consumer-bhX3T disconnected.
+1738007453: mosquitto version 2.0.20 terminating
+1738007453: Saving in-memory database to /mosquitto/data//mosquitto.db.
+1738008518: mosquitto version 2.0.20 starting
+1738008518: Config loaded from /mosquitto/config/mosquitto.conf.
+1738008518: Opening ipv4 listen socket on port 1883.
+1738008518: Opening ipv6 listen socket on port 1883.
+1738008518: mosquitto version 2.0.20 running
+1738008518: New connection from 172.18.0.4:55128 on port 1883.
+1738008518: New client connected from 172.18.0.4:55128 as Telegraf-Consumer-M7GKv (p2, c1, k60).
+1738008518: New connection from 172.18.0.4:55132 on port 1883.
+1738008518: New client connected from 172.18.0.4:55132 as Telegraf-Consumer-3bdbu (p2, c1, k60).
+1738008542: Client Telegraf-Consumer-M7GKv disconnected.
+1738008542: Client Telegraf-Consumer-3bdbu disconnected.
+1738008542: mosquitto version 2.0.20 terminating
+1738008542: Saving in-memory database to /mosquitto/data//mosquitto.db.
+1738008548: mosquitto version 2.0.20 starting
+1738008548: Config loaded from /mosquitto/config/mosquitto.conf.
+1738008548: Opening ipv4 listen socket on port 1883.
+1738008548: Opening ipv6 listen socket on port 1883.
+1738008548: mosquitto version 2.0.20 running
+1738008549: New connection from 172.18.0.5:45972 on port 1883.
+1738008549: New client connected from 172.18.0.5:45972 as Telegraf-Consumer-c3EWx (p2, c1, k60).
+1738008549: New connection from 172.18.0.5:45978 on port 1883.
+1738008549: New client connected from 172.18.0.5:45978 as Telegraf-Consumer-9abPQ (p2, c1, k60).
+1738008575: Client Telegraf-Consumer-c3EWx disconnected.
+1738008575: Client Telegraf-Consumer-9abPQ disconnected.
+1738008575: mosquitto version 2.0.20 terminating
+1738008575: Saving in-memory database to /mosquitto/data//mosquitto.db.
+1738008580: mosquitto version 2.0.20 starting
+1738008580: Config loaded from /mosquitto/config/mosquitto.conf.
+1738008580: Opening ipv4 listen socket on port 1883.
+1738008580: Opening ipv6 listen socket on port 1883.
+1738008580: mosquitto version 2.0.20 running
+1738008581: New connection from 172.18.0.5:41746 on port 1883.
+1738008581: New client connected from 172.18.0.5:41746 as Telegraf-Consumer-J3PUe (p2, c1, k60).
+1738008581: New connection from 172.18.0.5:41750 on port 1883.
+1738008581: New client connected from 172.18.0.5:41750 as Telegraf-Consumer-LqxDB (p2, c1, k60).
+1738008588: Client Telegraf-Consumer-J3PUe disconnected.
+1738008588: Client Telegraf-Consumer-LqxDB disconnected.
+1738008588: mosquitto version 2.0.20 terminating
+1738008588: Saving in-memory database to /mosquitto/data//mosquitto.db.
+1738008628: mosquitto version 2.0.20 starting
+1738008628: Config loaded from /mosquitto/config/mosquitto.conf.
+1738008628: Opening ipv4 listen socket on port 1883.
+1738008628: Opening ipv6 listen socket on port 1883.
+1738008628: mosquitto version 2.0.20 running
+1738008628: New connection from 172.18.0.5:49445 on port 1883.
+1738008628: New client connected from 172.18.0.5:49445 as sensors (p2, c1, k60).
+1738008628: New connection from 172.18.0.4:40316 on port 1883.
+1738008628: New client connected from 172.18.0.4:40316 as Telegraf-Consumer-fQK2n (p2, c1, k60).
+1738008628: New connection from 172.18.0.4:40324 on port 1883.
+1738008628: New client connected from 172.18.0.4:40324 as Telegraf-Consumer-dN3vM (p2, c1, k60).
+1738008628: Client sensors closed its connection.
+1738008660: Client Telegraf-Consumer-fQK2n disconnected.
+1738008660: Client Telegraf-Consumer-dN3vM disconnected.
+1738008660: mosquitto version 2.0.20 terminating
+1738008660: Saving in-memory database to /mosquitto/data//mosquitto.db.
+1738008665: mosquitto version 2.0.20 starting
+1738008665: Config loaded from /mosquitto/config/mosquitto.conf.
+1738008665: Opening ipv4 listen socket on port 1883.
+1738008665: Opening ipv6 listen socket on port 1883.
+1738008665: mosquitto version 2.0.20 running
+1738008665: New connection from 172.18.0.4:44305 on port 1883.
+1738008665: New client connected from 172.18.0.4:44305 as sensors (p2, c1, k60).
+1738008665: Client sensors closed its connection.
+1738008666: New connection from 172.18.0.5:55088 on port 1883.
+1738008666: New client connected from 172.18.0.5:55088 as Telegraf-Consumer-nTxhl (p2, c1, k60).
+1738008666: New connection from 172.18.0.5:55092 on port 1883.
+1738008666: New client connected from 172.18.0.5:55092 as Telegraf-Consumer-dac8E (p2, c1, k60).
+1738008680: Client Telegraf-Consumer-nTxhl disconnected.
+1738008680: Client Telegraf-Consumer-dac8E disconnected.
+1738008680: mosquitto version 2.0.20 terminating
+1738008680: Saving in-memory database to /mosquitto/data//mosquitto.db.
+1738008687: mosquitto version 2.0.20 starting
+1738008687: Config loaded from /mosquitto/config/mosquitto.conf.
+1738008687: Opening ipv4 listen socket on port 1883.
+1738008687: Opening ipv6 listen socket on port 1883.
+1738008687: mosquitto version 2.0.20 running
+1738008687: New connection from 172.18.0.4:42319 on port 1883.
+1738008687: New client connected from 172.18.0.4:42319 as sensors (p2, c1, k60).
+1738008687: Client sensors closed its connection.
+1738008687: New connection from 172.18.0.5:51786 on port 1883.
+1738008687: New client connected from 172.18.0.5:51786 as Telegraf-Consumer-ldVKO (p2, c1, k60).
+1738008687: New connection from 172.18.0.5:51794 on port 1883.
+1738008687: New client connected from 172.18.0.5:51794 as Telegraf-Consumer-ktwZ8 (p2, c1, k60).
+1738008716: Client Telegraf-Consumer-ldVKO disconnected.
+1738008716: Client Telegraf-Consumer-ktwZ8 disconnected.
+1738008717: mosquitto version 2.0.20 terminating
+1738008717: Saving in-memory database to /mosquitto/data//mosquitto.db.
+1738008720: mosquitto version 2.0.20 starting
+1738008720: Config loaded from /mosquitto/config/mosquitto.conf.
+1738008720: Opening ipv4 listen socket on port 1883.
+1738008720: Opening ipv6 listen socket on port 1883.
+1738008720: mosquitto version 2.0.20 running
+1738008721: New connection from 172.18.0.4:41672 on port 1883.
+1738008721: New client connected from 172.18.0.4:41672 as Telegraf-Consumer-KC3U7 (p2, c1, k60).
+1738008721: New connection from 172.18.0.4:41680 on port 1883.
+1738008721: New client connected from 172.18.0.4:41680 as Telegraf-Consumer-qI8tu (p2, c1, k60).
+1738008721: New connection from 172.18.0.5:38165 on port 1883.
+1738008721: New client connected from 172.18.0.5:38165 as sensors (p2, c1, k60).
+1738008721: Client sensors closed its connection.
+1738008799: Client Telegraf-Consumer-KC3U7 disconnected.
+1738008799: Client Telegraf-Consumer-qI8tu disconnected.
+1738008799: mosquitto version 2.0.20 terminating
+1738008799: Saving in-memory database to /mosquitto/data//mosquitto.db.
+1738008804: mosquitto version 2.0.20 starting
+1738008804: Config loaded from /mosquitto/config/mosquitto.conf.
+1738008804: Opening ipv4 listen socket on port 1883.
+1738008804: Opening ipv6 listen socket on port 1883.
+1738008804: mosquitto version 2.0.20 running
+1738008804: New connection from 172.18.0.4:44477 on port 1883.
+1738008804: New client connected from 172.18.0.4:44477 as sensors (p2, c1, k60).
+1738008804: Client sensors closed its connection.
+1738008804: New connection from 172.18.0.5:43468 on port 1883.
+1738008804: New client connected from 172.18.0.5:43468 as Telegraf-Consumer-ILN7y (p2, c1, k60).
+1738008804: New connection from 172.18.0.5:43470 on port 1883.
+1738008804: New client connected from 172.18.0.5:43470 as Telegraf-Consumer-eGJur (p2, c1, k60).
+1738008873: Client Telegraf-Consumer-ILN7y disconnected.
+1738008873: Client Telegraf-Consumer-eGJur disconnected.
+1738008873: mosquitto version 2.0.20 terminating
+1738008873: Saving in-memory database to /mosquitto/data//mosquitto.db.
+1738008876: mosquitto version 2.0.20 starting
+1738008876: Config loaded from /mosquitto/config/mosquitto.conf.
+1738008876: Opening ipv4 listen socket on port 1883.
+1738008876: Opening ipv6 listen socket on port 1883.
+1738008876: mosquitto version 2.0.20 running
+1738008877: New connection from 172.18.0.4:48625 on port 1883.
+1738008877: New client connected from 172.18.0.4:48625 as sensors (p2, c1, k60).
+1738008877: Client sensors closed its connection.
+1738008877: New connection from 172.18.0.5:44386 on port 1883.
+1738008877: New client connected from 172.18.0.5:44386 as Telegraf-Consumer-ESOgV (p2, c1, k60).
+1738008877: New connection from 172.18.0.5:44398 on port 1883.
+1738008877: New client connected from 172.18.0.5:44398 as Telegraf-Consumer-h30zA (p2, c1, k60).
+1738008895: Client Telegraf-Consumer-ESOgV disconnected.
+1738008895: Client Telegraf-Consumer-h30zA disconnected.
+1738008895: mosquitto version 2.0.20 terminating
+1738008895: Saving in-memory database to /mosquitto/data//mosquitto.db.
+1738008898: mosquitto version 2.0.20 starting
+1738008898: Config loaded from /mosquitto/config/mosquitto.conf.
+1738008898: Opening ipv4 listen socket on port 1883.
+1738008898: Opening ipv6 listen socket on port 1883.
+1738008898: mosquitto version 2.0.20 running
+1738008899: New connection from 172.18.0.4:33755 on port 1883.
+1738008899: New client connected from 172.18.0.4:33755 as sensors (p2, c1, k60).
+1738008899: Client sensors closed its connection.
+1738008899: New connection from 172.18.0.5:46946 on port 1883.
+1738008899: New client connected from 172.18.0.5:46946 as Telegraf-Consumer-ZvjXj (p2, c1, k60).
+1738008899: New connection from 172.18.0.5:46962 on port 1883.
+1738008899: New client connected from 172.18.0.5:46962 as Telegraf-Consumer-qOPza (p2, c1, k60).
+1738008906: Client Telegraf-Consumer-ZvjXj disconnected.
+1738008906: Client Telegraf-Consumer-qOPza disconnected.
+1738008906: mosquitto version 2.0.20 terminating
+1738008906: Saving in-memory database to /mosquitto/data//mosquitto.db.
+1738008912: mosquitto version 2.0.20 starting
+1738008912: Config loaded from /mosquitto/config/mosquitto.conf.
+1738008912: Opening ipv4 listen socket on port 1883.
+1738008912: Opening ipv6 listen socket on port 1883.
+1738008912: mosquitto version 2.0.20 running
+1738008912: New connection from 172.18.0.4:43333 on port 1883.
+1738008912: New client connected from 172.18.0.4:43333 as sensors (p2, c1, k60).
+1738008912: Client sensors closed its connection.
+1738008912: New connection from 172.18.0.5:48064 on port 1883.
+1738008912: New client connected from 172.18.0.5:48064 as Telegraf-Consumer-NZzKA (p2, c1, k60).
+1738008912: New connection from 172.18.0.5:48072 on port 1883.
+1738008912: New client connected from 172.18.0.5:48072 as Telegraf-Consumer-9IgBr (p2, c1, k60).
+1738008932: Client Telegraf-Consumer-NZzKA disconnected.
+1738008932: Client Telegraf-Consumer-9IgBr disconnected.
+1738008933: mosquitto version 2.0.20 terminating
+1738008933: Saving in-memory database to /mosquitto/data//mosquitto.db.
+1738008936: mosquitto version 2.0.20 starting
+1738008936: Config loaded from /mosquitto/config/mosquitto.conf.
+1738008936: Opening ipv4 listen socket on port 1883.
+1738008936: Opening ipv6 listen socket on port 1883.
+1738008936: mosquitto version 2.0.20 running
+1738008936: New connection from 172.18.0.4:41975 on port 1883.
+1738008936: New client connected from 172.18.0.4:41975 as sensors (p2, c1, k60).
+1738008936: Client sensors closed its connection.
+1738008936: New connection from 172.18.0.5:56570 on port 1883.
+1738008936: New client connected from 172.18.0.5:56570 as Telegraf-Consumer-qBH65 (p2, c1, k60).
+1738008936: New connection from 172.18.0.5:56580 on port 1883.
+1738008936: New client connected from 172.18.0.5:56580 as Telegraf-Consumer-H6dkZ (p2, c1, k60).
+1738008950: Client Telegraf-Consumer-qBH65 disconnected.
+1738008950: Client Telegraf-Consumer-H6dkZ disconnected.
+1738008950: mosquitto version 2.0.20 terminating
+1738008950: Saving in-memory database to /mosquitto/data//mosquitto.db.
+1738008954: mosquitto version 2.0.20 starting
+1738008954: Config loaded from /mosquitto/config/mosquitto.conf.
+1738008954: Opening ipv4 listen socket on port 1883.
+1738008954: Opening ipv6 listen socket on port 1883.
+1738008954: mosquitto version 2.0.20 running
+1738008954: New connection from 172.18.0.4:40011 on port 1883.
+1738008954: New client connected from 172.18.0.4:40011 as sensors (p2, c1, k60).
+1738008954: New connection from 172.18.0.5:35190 on port 1883.
+1738008954: New client connected from 172.18.0.5:35190 as Telegraf-Consumer-YFPxi (p2, c1, k60).
+1738008954: New connection from 172.18.0.5:35202 on port 1883.
+1738008954: New client connected from 172.18.0.5:35202 as Telegraf-Consumer-NXKI2 (p2, c1, k60).
+1738008964: Client sensors closed its connection.
+1738009124: Client Telegraf-Consumer-YFPxi disconnected.
+1738009124: Client Telegraf-Consumer-NXKI2 disconnected.
+1738009124: mosquitto version 2.0.20 terminating
+1738009124: Saving in-memory database to /mosquitto/data//mosquitto.db.
+1738009128: mosquitto version 2.0.20 starting
+1738009128: Config loaded from /mosquitto/config/mosquitto.conf.
+1738009128: Opening ipv4 listen socket on port 1883.
+1738009128: Opening ipv6 listen socket on port 1883.
+1738009128: mosquitto version 2.0.20 running
+1738009128: New connection from 172.18.0.4:50717 on port 1883.
+1738009128: New client connected from 172.18.0.4:50717 as sensors (p2, c1, k60).
+1738009128: New connection from 172.18.0.5:47556 on port 1883.
+1738009128: New client connected from 172.18.0.5:47556 as Telegraf-Consumer-3rWeS (p2, c1, k60).
+1738009128: New connection from 172.18.0.5:47572 on port 1883.
+1738009128: New client connected from 172.18.0.5:47572 as Telegraf-Consumer-Is9U6 (p2, c1, k60).
+1738009216: Client Telegraf-Consumer-3rWeS disconnected.
+1738009216: Client Telegraf-Consumer-Is9U6 disconnected.
+1738009226: Client sensors closed its connection.
+1738009226: mosquitto version 2.0.20 terminating
+1738009226: Saving in-memory database to /mosquitto/data//mosquitto.db.
+1738009230: mosquitto version 2.0.20 starting
+1738009230: Config loaded from /mosquitto/config/mosquitto.conf.
+1738009230: Opening ipv4 listen socket on port 1883.
+1738009230: Opening ipv6 listen socket on port 1883.
+1738009230: mosquitto version 2.0.20 running
+1738009230: New connection from 172.18.0.4:50937 on port 1883.
+1738009230: New client connected from 172.18.0.4:50937 as sensors (p2, c1, k60).
+1738009230: New connection from 172.18.0.5:60574 on port 1883.
+1738009230: New client connected from 172.18.0.5:60574 as Telegraf-Consumer-rXgAJ (p2, c1, k60).
+1738009230: New connection from 172.18.0.5:60586 on port 1883.
+1738009230: New client connected from 172.18.0.5:60586 as Telegraf-Consumer-AyROa (p2, c1, k60).
+1738009236: Client Telegraf-Consumer-rXgAJ disconnected.
+1738009236: Client Telegraf-Consumer-AyROa disconnected.
+1738009246: Client sensors closed its connection.
+1738009246: mosquitto version 2.0.20 terminating
+1738009246: Saving in-memory database to /mosquitto/data//mosquitto.db.
+1738009249: mosquitto version 2.0.20 starting
+1738009249: Config loaded from /mosquitto/config/mosquitto.conf.
+1738009249: Opening ipv4 listen socket on port 1883.
+1738009249: Opening ipv6 listen socket on port 1883.
+1738009249: mosquitto version 2.0.20 running
+1738009250: New connection from 172.18.0.4:51725 on port 1883.
+1738009250: New client connected from 172.18.0.4:51725 as sensors (p2, c1, k60).
+1738009250: New connection from 172.18.0.5:56754 on port 1883.
+1738009250: New client connected from 172.18.0.5:56754 as Telegraf-Consumer-JHUe9 (p2, c1, k60).
+1738009250: New connection from 172.18.0.5:56758 on port 1883.
+1738009250: New client connected from 172.18.0.5:56758 as Telegraf-Consumer-Wvs2E (p2, c1, k60).
+1738009314: Client Telegraf-Consumer-JHUe9 disconnected.
+1738009314: Client Telegraf-Consumer-Wvs2E disconnected.
+1738009324: Client sensors closed its connection.
+1738009325: mosquitto version 2.0.20 terminating
+1738009325: Saving in-memory database to /mosquitto/data//mosquitto.db.
+1738009354: mosquitto version 2.0.20 starting
+1738009354: Config loaded from /mosquitto/config/mosquitto.conf.
+1738009354: Opening ipv4 listen socket on port 1883.
+1738009354: Opening ipv6 listen socket on port 1883.
+1738009354: mosquitto version 2.0.20 running
+1738009355: New connection from 172.18.0.4:49603 on port 1883.
+1738009355: New client connected from 172.18.0.4:49603 as sensors (p2, c1, k60).
+1738009355: New connection from 172.18.0.5:51226 on port 1883.
+1738009355: New client connected from 172.18.0.5:51226 as Telegraf-Consumer-sUtN8 (p2, c1, k60).
+1738009355: New connection from 172.18.0.5:51236 on port 1883.
+1738009355: New client connected from 172.18.0.5:51236 as Telegraf-Consumer-T30Mr (p2, c1, k60).
+1738009385: Client Telegraf-Consumer-sUtN8 disconnected.
+1738009385: Client Telegraf-Consumer-T30Mr disconnected.
+1738009395: Client sensors closed its connection.
+1738009395: mosquitto version 2.0.20 terminating
+1738009395: Saving in-memory database to /mosquitto/data//mosquitto.db.
+1738009408: mosquitto version 2.0.20 starting
+1738009408: Config loaded from /mosquitto/config/mosquitto.conf.
+1738009408: Opening ipv4 listen socket on port 1883.
+1738009408: Opening ipv6 listen socket on port 1883.
+1738009408: mosquitto version 2.0.20 running
+1738009409: New connection from 172.18.0.4:44475 on port 1883.
+1738009409: New client connected from 172.18.0.4:44475 as sensors (p2, c1, k60).
+1738009409: New connection from 172.18.0.5:49200 on port 1883.
+1738009409: New client connected from 172.18.0.5:49200 as Telegraf-Consumer-2ps8K (p2, c1, k60).
+1738009409: New connection from 172.18.0.5:49202 on port 1883.
+1738009409: New client connected from 172.18.0.5:49202 as Telegraf-Consumer-4njBL (p2, c1, k60).
+1738009452: Client Telegraf-Consumer-2ps8K disconnected.
+1738009452: Client Telegraf-Consumer-4njBL disconnected.
+1738009462: Client sensors closed its connection.
+1738009462: mosquitto version 2.0.20 terminating
+1738009462: Saving in-memory database to /mosquitto/data//mosquitto.db.
+1738009482: mosquitto version 2.0.20 starting
+1738009482: Config loaded from /mosquitto/config/mosquitto.conf.
+1738009482: Opening ipv4 listen socket on port 1883.
+1738009482: Opening ipv6 listen socket on port 1883.
+1738009482: mosquitto version 2.0.20 running
+1738009482: New connection from 172.18.0.4:41237 on port 1883.
+1738009482: New client connected from 172.18.0.4:41237 as sensors (p2, c1, k60).
+1738009482: New connection from 172.18.0.5:56582 on port 1883.
+1738009482: New client connected from 172.18.0.5:56582 as Telegraf-Consumer-3u2Ur (p2, c1, k60).
+1738009482: New connection from 172.18.0.5:56590 on port 1883.
+1738009482: New client connected from 172.18.0.5:56590 as Telegraf-Consumer-Rzi6y (p2, c1, k60).
+1738009814: Client Telegraf-Consumer-3u2Ur disconnected.
+1738009814: Client Telegraf-Consumer-Rzi6y disconnected.
+1738009824: Client sensors closed its connection.
+1738009825: mosquitto version 2.0.20 terminating
+1738009825: Saving in-memory database to /mosquitto/data//mosquitto.db.
+1738009842: mosquitto version 2.0.20 starting
+1738009842: Config loaded from /mosquitto/config/mosquitto.conf.
+1738009842: Opening ipv4 listen socket on port 1883.
+1738009842: Opening ipv6 listen socket on port 1883.
+1738009842: mosquitto version 2.0.20 running
+1738009842: New connection from 172.18.0.4:43480 on port 1883.
+1738009842: New client connected from 172.18.0.4:43480 as Telegraf-Consumer-hOPkh (p2, c1, k60).
+1738009842: New connection from 172.18.0.5:34859 on port 1883.
+1738009842: New connection from 172.18.0.4:43482 on port 1883.
+1738009842: New client connected from 172.18.0.5:34859 as sensors (p2, c1, k60).
+1738009842: New client connected from 172.18.0.4:43482 as Telegraf-Consumer-XMGbJ (p2, c1, k60).
+1738009925: Client Telegraf-Consumer-hOPkh disconnected.
+1738009925: Client Telegraf-Consumer-XMGbJ disconnected.
+1738009935: Client sensors closed its connection.
+1738009936: mosquitto version 2.0.20 terminating
+1738009936: Saving in-memory database to /mosquitto/data//mosquitto.db.
+1738010425: mosquitto version 2.0.20 starting
+1738010425: Config loaded from /mosquitto/config/mosquitto.conf.
+1738010425: Opening ipv4 listen socket on port 1883.
+1738010425: Opening ipv6 listen socket on port 1883.
+1738010425: mosquitto version 2.0.20 running
+1738010426: New connection from 172.18.0.4:54272 on port 1883.
+1738010426: New client connected from 172.18.0.4:54272 as Telegraf-Consumer-epsYF (p2, c1, k60).
+1738010426: New connection from 172.18.0.4:54282 on port 1883.
+1738010426: New client connected from 172.18.0.4:54282 as Telegraf-Consumer-Ap81V (p2, c1, k60).
+1738010426: New connection from 172.18.0.5:45577 on port 1883.
+1738010426: New client connected from 172.18.0.5:45577 as sensors (p2, c1, k60).
+1738010458: Client Telegraf-Consumer-epsYF disconnected.
+1738010458: Client Telegraf-Consumer-Ap81V disconnected.
+1738010468: Client sensors closed its connection.
+1738010468: mosquitto version 2.0.20 terminating
+1738010468: Saving in-memory database to /mosquitto/data//mosquitto.db.
+1738010862: mosquitto version 2.0.20 starting
+1738010862: Config loaded from /mosquitto/config/mosquitto.conf.
+1738010862: Opening ipv4 listen socket on port 1883.
+1738010862: Opening ipv6 listen socket on port 1883.
+1738010862: mosquitto version 2.0.20 running
+1738010863: New connection from 172.18.0.4:45957 on port 1883.
+1738010863: New client connected from 172.18.0.4:45957 as sensors (p2, c1, k60).
+1738010863: New connection from 172.18.0.5:41736 on port 1883.
+1738010863: New client connected from 172.18.0.5:41736 as Telegraf-Consumer-1cTVk (p2, c1, k60).
+1738010863: New connection from 172.18.0.5:41742 on port 1883.
+1738010863: New client connected from 172.18.0.5:41742 as Telegraf-Consumer-iwUQ3 (p2, c1, k60).
+1738010898: Client Telegraf-Consumer-1cTVk disconnected.
+1738010898: Client Telegraf-Consumer-iwUQ3 disconnected.
+1738010908: Client sensors closed its connection.
+1738010908: mosquitto version 2.0.20 terminating
+1738010908: Saving in-memory database to /mosquitto/data//mosquitto.db.
+1738010939: mosquitto version 2.0.20 starting
+1738010939: Config loaded from /mosquitto/config/mosquitto.conf.
+1738010939: Opening ipv4 listen socket on port 1883.
+1738010939: Opening ipv6 listen socket on port 1883.
+1738010939: mosquitto version 2.0.20 running
+1738010940: New connection from 172.18.0.4:37943 on port 1883.
+1738010940: New client connected from 172.18.0.4:37943 as sensors (p2, c1, k60).
+1738010940: New connection from 172.18.0.5:38638 on port 1883.
+1738010940: New client connected from 172.18.0.5:38638 as Telegraf-Consumer-f37jn (p2, c1, k60).
+1738010940: New connection from 172.18.0.5:38648 on port 1883.
+1738010940: New client connected from 172.18.0.5:38648 as Telegraf-Consumer-6xpR0 (p2, c1, k60).
+1738011000: Client Telegraf-Consumer-f37jn disconnected.
+1738011000: Client Telegraf-Consumer-6xpR0 disconnected.
+1738011010: Client sensors closed its connection.
+1738011010: mosquitto version 2.0.20 terminating
+1738011010: Saving in-memory database to /mosquitto/data//mosquitto.db.
+1738011017: mosquitto version 2.0.20 starting
+1738011017: Config loaded from /mosquitto/config/mosquitto.conf.
+1738011017: Opening ipv4 listen socket on port 1883.
+1738011017: Opening ipv6 listen socket on port 1883.
+1738011017: mosquitto version 2.0.20 running
+1738011018: New connection from 172.18.0.5:49147 on port 1883.
+1738011018: New client connected from 172.18.0.5:49147 as sensors (p2, c1, k60).
+1738011018: New connection from 172.18.0.4:38202 on port 1883.
+1738011018: New client connected from 172.18.0.4:38202 as Telegraf-Consumer-ISEJD (p2, c1, k60).
+1738011018: New connection from 172.18.0.4:38212 on port 1883.
+1738011018: New client connected from 172.18.0.4:38212 as Telegraf-Consumer-MCbjM (p2, c1, k60).
+1738011074: Client Telegraf-Consumer-ISEJD disconnected.
+1738011074: Client Telegraf-Consumer-MCbjM disconnected.
+1738011084: Client sensors closed its connection.
+1738011085: mosquitto version 2.0.20 terminating
+1738011085: Saving in-memory database to /mosquitto/data//mosquitto.db.
+1738011117: mosquitto version 2.0.20 starting
+1738011117: Config loaded from /mosquitto/config/mosquitto.conf.
+1738011117: Opening ipv4 listen socket on port 1883.
+1738011117: Opening ipv6 listen socket on port 1883.
+1738011117: mosquitto version 2.0.20 running
+1738011118: New connection from 172.18.0.5:52915 on port 1883.
+1738011118: New client connected from 172.18.0.5:52915 as sensors (p2, c1, k60).
+1738011118: New connection from 172.18.0.4:46498 on port 1883.
+1738011118: New client connected from 172.18.0.4:46498 as Telegraf-Consumer-pYIym (p2, c1, k60).
+1738011118: New connection from 172.18.0.4:46502 on port 1883.
+1738011118: New client connected from 172.18.0.4:46502 as Telegraf-Consumer-ZcAUx (p2, c1, k60).
+1738011234: Client Telegraf-Consumer-pYIym disconnected.
+1738011234: Client Telegraf-Consumer-ZcAUx disconnected.
+1738011244: Client sensors closed its connection.
+1738011244: mosquitto version 2.0.20 terminating
+1738011244: Saving in-memory database to /mosquitto/data//mosquitto.db.
+1738011416: mosquitto version 2.0.20 starting
+1738011416: Config loaded from /mosquitto/config/mosquitto.conf.
+1738011416: Opening ipv4 listen socket on port 1883.
+1738011416: Opening ipv6 listen socket on port 1883.
+1738011416: mosquitto version 2.0.20 running
+1738011416: New connection from 172.18.0.4:42767 on port 1883.
+1738011416: New client connected from 172.18.0.4:42767 as sensors (p2, c1, k60).
+1738011416: New connection from 172.18.0.5:33266 on port 1883.
+1738011416: New client connected from 172.18.0.5:33266 as Telegraf-Consumer-e8zXF (p2, c1, k60).
+1738011416: New connection from 172.18.0.5:33272 on port 1883.
+1738011416: New client connected from 172.18.0.5:33272 as Telegraf-Consumer-9D7Yb (p2, c1, k60).
+1738011483: Client Telegraf-Consumer-e8zXF disconnected.
+1738011483: Client Telegraf-Consumer-9D7Yb disconnected.
+1738011493: Client sensors closed its connection.
+1738011494: mosquitto version 2.0.20 terminating
+1738011494: Saving in-memory database to /mosquitto/data//mosquitto.db.
+1738011501: mosquitto version 2.0.20 starting
+1738011501: Config loaded from /mosquitto/config/mosquitto.conf.
+1738011501: Opening ipv4 listen socket on port 1883.
+1738011501: Opening ipv6 listen socket on port 1883.
+1738011501: mosquitto version 2.0.20 running
+1738011501: New connection from 172.18.0.4:41570 on port 1883.
+1738011501: New client connected from 172.18.0.4:41570 as Telegraf-Consumer-YL8u1 (p2, c1, k60).
+1738011501: New connection from 172.18.0.4:41586 on port 1883.
+1738011501: New client connected from 172.18.0.4:41586 as Telegraf-Consumer-5wbXE (p2, c1, k60).
+1738011501: New connection from 172.18.0.5:50733 on port 1883.
+1738011501: New client connected from 172.18.0.5:50733 as sensors (p2, c1, k60).
+1738011618: Client Telegraf-Consumer-YL8u1 disconnected.
+1738011618: Client Telegraf-Consumer-5wbXE disconnected.
+1738011628: Client sensors closed its connection.
+1738011629: mosquitto version 2.0.20 terminating
+1738011629: Saving in-memory database to /mosquitto/data//mosquitto.db.
+1738011637: mosquitto version 2.0.20 starting
+1738011637: Config loaded from /mosquitto/config/mosquitto.conf.
+1738011637: Opening ipv4 listen socket on port 1883.
+1738011637: Opening ipv6 listen socket on port 1883.
+1738011637: mosquitto version 2.0.20 running
+1738011637: New connection from 172.18.0.4:52882 on port 1883.
+1738011637: New client connected from 172.18.0.4:52882 as Telegraf-Consumer-W1mNk (p2, c1, k60).
+1738011637: New connection from 172.18.0.4:52884 on port 1883.
+1738011637: New client connected from 172.18.0.4:52884 as Telegraf-Consumer-gKlQs (p2, c1, k60).
+1738011637: New connection from 172.18.0.5:46547 on port 1883.
+1738011637: New client connected from 172.18.0.5:46547 as sensors (p2, c1, k60).
+1738011674: Client Telegraf-Consumer-W1mNk disconnected.
+1738011674: Client Telegraf-Consumer-gKlQs disconnected.
+1738011676: Client sensors closed its connection.
+1738011677: mosquitto version 2.0.20 terminating
+1738011677: Saving in-memory database to /mosquitto/data//mosquitto.db.
+1738011683: mosquitto version 2.0.20 starting
+1738011683: Config loaded from /mosquitto/config/mosquitto.conf.
+1738011683: Opening ipv4 listen socket on port 1883.
+1738011683: Opening ipv6 listen socket on port 1883.
+1738011683: mosquitto version 2.0.20 running
+1738011684: New connection from 172.18.0.4:33414 on port 1883.
+1738011684: New client connected from 172.18.0.4:33414 as Telegraf-Consumer-unwNY (p2, c1, k60).
+1738011684: New connection from 172.18.0.4:33426 on port 1883.
+1738011684: New client connected from 172.18.0.4:33426 as Telegraf-Consumer-Pa247 (p2, c1, k60).
+1738011684: New connection from 172.18.0.5:46235 on port 1883.
+1738011684: New client connected from 172.18.0.5:46235 as sensors (p2, c1, k60).
+1738011722: Client Telegraf-Consumer-unwNY disconnected.
+1738011722: Client Telegraf-Consumer-Pa247 disconnected.
+1738011732: Client sensors closed its connection.
+1738011732: mosquitto version 2.0.20 terminating
+1738011732: Saving in-memory database to /mosquitto/data//mosquitto.db.
+1738011738: mosquitto version 2.0.20 starting
+1738011738: Config loaded from /mosquitto/config/mosquitto.conf.
+1738011738: Opening ipv4 listen socket on port 1883.
+1738011738: Opening ipv6 listen socket on port 1883.
+1738011738: mosquitto version 2.0.20 running
+1738011738: New connection from 172.18.0.4:47569 on port 1883.
+1738011738: New client connected from 172.18.0.4:47569 as sensors (p2, c1, k60).
+1738011739: New connection from 172.18.0.5:59878 on port 1883.
+1738011739: New client connected from 172.18.0.5:59878 as Telegraf-Consumer-rL4xf (p2, c1, k60).
+1738011739: New connection from 172.18.0.5:59890 on port 1883.
+1738011739: New client connected from 172.18.0.5:59890 as Telegraf-Consumer-Qtb1V (p2, c1, k60).
+1738011921: Client Telegraf-Consumer-rL4xf disconnected.
+1738011921: Client Telegraf-Consumer-Qtb1V disconnected.
+1738011931: Client sensors closed its connection.
+1738011931: mosquitto version 2.0.20 terminating
+1738011931: Saving in-memory database to /mosquitto/data//mosquitto.db.
