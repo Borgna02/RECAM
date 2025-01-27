@@ -22,7 +22,7 @@ services:
       - DOCKER_INFLUXDB_INIT_PASSWORD=recam123
       - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=token
       - DOCKER_INFLUXDB_INIT_ORG=RECAM
-      - DOCKER_INFLUXDB_INIT_BUCKET=production
+      - DOCKER_INFLUXDB_INIT_BUCKET=RECAM
     volumes:
       - knowledge_v:/var/lib/influxdb2
     networks:
@@ -45,11 +45,62 @@ services:
     container_name: sensors
     depends_on:
       - broker
+      - knowledge
+      - monitor
     networks:
       - recam_network
     volumes:
       - ./recam-config:/app/config
 
+  analyzer:
+    build:
+      context: ./analyzer
+    container_name: analyzer
+    environment:
+      - INFLUXDB_URL=http://knowledge:8086
+      - INFLUXDB_TOKEN=token
+      - INFLUXDB_ORG=RECAM
+      - INFLUXDB_BUCKET=RECAM
+      - PLANNER_API=http://planner:8080
+    depends_on:
+      - sensors
+    networks:
+      - recam_network
+    volumes:
+      - ./recam-config:/app/config
+
+  planner:
+    build:
+      context: ./planner
+    container_name: planner
+    depends_on:
+      - analyzer
+    networks:
+      - recam_network
+    volumes:
+      - ./recam-config:/app/config
+  
+  executor:
+    build:
+      context: ./executor
+    container_name: executor
+    depends_on:
+      - planner
+    networks:
+      - recam_network
+    volumes:
+      - ./recam-config:/app/config
+
+  actuators:
+    build:
+      context: ./actuators
+    container_name: actuators
+    depends_on:
+      - executor
+    networks:
+      - recam_network
+    volumes:
+      - ./recam-config:/app/config
 
 volumes:
   knowledge_v: 

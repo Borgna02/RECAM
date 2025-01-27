@@ -15,52 +15,101 @@ def generate_production():
 def load_sensor_config() -> dict:
     with open('config/REC.json', 'r') as file:
         config = json.load(file)
-    return config["REC"]
+        
+    # Initialize tau and delta for each consumer
+    for member in config["members"]:
+        for consumer_id in config["members"][member]["consumers"]:
+            config["members"][member]["consumers"][consumer_id]["tau"] = 0
+            config["members"][member]["consumers"][consumer_id]["delta"] = 0
+            config["members"][member]["consumers"][consumer_id]["activated"] = False
+            
+    return config["members"], config["battery"]
 
 # Configurazione del broker MQTT
 BROKER = "broker"  # Nome del servizio nel docker-compose.yml
 PORT = 1883
 PROD_TOPIC_STRUCTURE = "/producer/{member_id}/{prod_id}"  
 TAUDELTA_TOPIC_STRUCTURE = "/consumer/taudelta/{member_id}/{cons_id}" 
+BATTERY_TOPIC_STRUCTURE = "/battery"
 
 # Let's assume that every step of simulation (one second) is a minute in real life
 STEP_DURATION = 1 # seconds
 SECONDS_IN_A_SIMULATION_STEP = 60
+MINUTES_IN_A_SIMULATION_STEP = SECONDS_IN_A_SIMULATION_STEP / 60
+HOURS_IN_A_SIMULATION_STEP = MINUTES_IN_A_SIMULATION_STEP / 60
 
-TAU_DELTA_INTERVAL_BOUNDS = (45, 90)
+TAU_DELTA_INTERVAL_BOUNDS = (60, 90)
+
 
 if __name__ == '__main__':
     client = mqtt.Client("sensors")
     client.connect(BROKER, PORT)
     
-    rec = load_sensor_config()
+    members, battery_info = load_sensor_config()
     
-    i = 0
+    i = -1
     # Generate a random tau, delta every 60-90 steps
-    interval = random.randint(**TAU_DELTA_INTERVAL_BOUNDS)
+    interval = random.randint(*TAU_DELTA_INTERVAL_BOUNDS)
     
+    battery_value = 0
     while True:
         timestamp = int(time.time() * 1e9)  # Convert to nanoseconds for InfluxDB line protocol
         
+        battery_delta = 0
         # Generate production values for each producer in each member every second (minute in real life) 
-        for member in rec:
-            for producer_id, producer_data in rec[member]["producers"].items():
+        for member in members:
+            for producer_id, producer_data in members[member]["producers"].items():
                 # Simulate average immediate production (production for each second) and calculate the production in a step in kWh
                 average_immediate_production = float(producer_data["max-pi"]) * generate_production() 
-                production = average_immediate_production * (SECONDS_IN_A_SIMULATION_STEP / 3600) # Convert to kWh
+                production = average_immediate_production * HOURS_IN_A_SIMULATION_STEP # Convert to kWh
+                battery_delta += production
                 
                 # Publish the production value
                 topic = PROD_TOPIC_STRUCTURE.format(member_id=member, prod_id=producer_id)
                 message = f"production,producer_id={producer_id},member_id={member} value={production} {timestamp}"
                 client.publish(topic, message)
                 
+            for consumer_id, consumer_data in members[member]["consumers"].items():
+                # Simulate the time passing for delta
+                if consumer_data["delta"] != 0:
+                    consumer_data["delta"] -= MINUTES_IN_A_SIMULATION_STEP
+                    
+                    # TODO sostituire questo random con una lettura dagli actuators
+                    if random.uniform(0,1) < 0.001 and not consumer_data["activated"]:
+                        consumer_data["activated"] = True
+                        print(f"Consumer {consumer_id} in member {member} activated", flush=True)
+                    
+                if consumer_data["activated"]:
+                    consumer_data["tau"] -= MINUTES_IN_A_SIMULATION_STEP
+                    if consumer_data["tau"] == 0:
+                        consumer_data["activated"] = False
+                        consumer_data["delta"] = 0
+                        
+                    battery_delta -= consumer_data["cons"] * HOURS_IN_A_SIMULATION_STEP
+                        
+                topic = TAUDELTA_TOPIC_STRUCTURE.format(member_id=member, cons_id=consumer_id)
+                message = f"tau_delta,consumer_id={consumer_id},member_id={member} tau={consumer_data['tau']},delta={consumer_data['delta']} {timestamp}"
+                client.publish(topic, message)
+            
+        battery_value = min(battery_value + battery_delta, battery_info["max-capacity"])
+        # Publish the battery delta
+        message = f"battery value={battery_value} {timestamp}"
+        client.publish(BATTERY_TOPIC_STRUCTURE, message)
+                
+                
+                
         
         # Each interval, generate a tau and delta value for a random consumer and publish it
-        if i == interval:
-            member_id = random.choice(list(rec.keys()))
-            member = rec[member_id]
+        if i == interval or i == -1:
+            member_id = random.choice(list(members.keys()))
+            member = members[member_id]
             
-            consumer_id = random.choice(list(member["consumers"].keys()))
+            
+            unassigned_consumers = [cid for cid, cdata in member["consumers"].items() if cdata["tau"] == 0 and cdata["delta"] == 0]
+            if not unassigned_consumers:
+                continue  # If all consumers have tau and delta, skip this interval
+            
+            consumer_id = random.choice(unassigned_consumers)
 
             tau, delta = generate_tau_delta_in_minutes()
             topic = TAUDELTA_TOPIC_STRUCTURE.format(member_id=member_id, cons_id=consumer_id)
@@ -68,8 +117,13 @@ if __name__ == '__main__':
             message = f"tau_delta,consumer_id={consumer_id},member_id={member_id} tau={tau},delta={delta} {timestamp}"
             client.publish(topic, message)
             
+            # Update the configuration
+            members[member_id]["consumers"][consumer_id]["tau"] = tau
+            members[member_id]["consumers"][consumer_id]["delta"] = delta
+            
+                
             i = 0
-            interval = random.randint(**TAU_DELTA_INTERVAL_BOUNDS)
+            interval = random.randint(*TAU_DELTA_INTERVAL_BOUNDS)
         
         i += 1
         time.sleep(STEP_DURATION)

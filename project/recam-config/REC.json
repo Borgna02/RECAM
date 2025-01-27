@@ -1,5 +1,5 @@
 {
-    "REC": {
+    "members": {
         "m1": {
             "producers": {
                 "p1": {
@@ -10,6 +10,15 @@
                 },
                 "p3": {
                     "max-pi": 0.5
+                },
+                "p4": {
+                    "max-pi": 0.6
+                },
+                "p5": {
+                    "max-pi": 0.2
+                },
+                "p6": {
+                    "max-pi": 0.6
                 }
             },
             "consumers": {
@@ -45,5 +54,8 @@
                 }
             }
         }
+    },
+    "battery": {
+        "max-capacity": 10        
     }
 }
