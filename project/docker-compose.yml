@@ -102,6 +102,21 @@ services:
     volumes:
       - ./recam-config:/app/config
 
+  grafana:
+    image: grafana/grafana:11.4.0
+    container_name: grafana
+    depends_on:
+      - knowledge
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=recam123
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./grafana:/var/lib/grafana
+    networks:
+      - recam_network
+
 volumes:
   knowledge_v: 
     name: knowledge_v

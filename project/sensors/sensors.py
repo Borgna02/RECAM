@@ -88,10 +88,10 @@ if __name__ == '__main__':
                     battery_delta -= consumer_data["cons"] * HOURS_IN_A_SIMULATION_STEP
                         
                 topic = TAUDELTA_TOPIC_STRUCTURE.format(member_id=member, cons_id=consumer_id)
-                message = f"tau_delta,consumer_id={consumer_id},member_id={member} active={consumer_data['activated']},tau={consumer_data['tau']},delta={consumer_data['delta']} {timestamp}"
+                message = f"tau_delta,consumer_id={consumer_id},member_id={member},cons={consumer_data['cons']} active={consumer_data['activated']},tau={consumer_data['tau']},delta={consumer_data['delta']} {timestamp}"
                 client.publish(topic, message)
             
-        battery_value = min(battery_value + battery_delta, battery_info["max-capacity"])
+        battery_value = max(min(battery_value + battery_delta, battery_info["max-capacity"]), 0)
         # Publish the battery delta
         message = f"battery value={battery_value} {timestamp}"
         client.publish(BATTERY_TOPIC_STRUCTURE, message)
@@ -114,7 +114,7 @@ if __name__ == '__main__':
             tau, delta = generate_tau_delta_in_minutes()
             topic = TAUDELTA_TOPIC_STRUCTURE.format(member_id=member_id, cons_id=consumer_id)
             
-            message = f"tau_delta,consumer_id={consumer_id},member_id={member_id} active={consumer_data['activated']},tau={tau},delta={delta} {timestamp}"
+            message = f"tau_delta,consumer_id={consumer_id},member_id={member_id},cons={consumer_data['cons']} active={consumer_data['activated']},tau={tau},delta={delta} {timestamp}"
             client.publish(topic, message)
             
             # Update the configuration
