@@ -43,6 +43,12 @@ services:
     build:
       context: ./sensors
     container_name: sensors
+    environment:
+      - BROKER=broker  # Service name in docker-compose.yml
+      - PORT=1883
+      - STEP_DURATION=1
+      - SECONDS_IN_A_SIMULATION_STEP=60
+      - TAU_DELTA_INTERVAL_BOUNDS=60,90
     depends_on:
       - broker
       - knowledge

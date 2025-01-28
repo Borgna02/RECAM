@@ -3,6 +3,7 @@ import json
 import time
 import threading
 from flask import Flask, request, jsonify
+import os
 import paho.mqtt.client as mqtt
 
 def generate_tau_delta_in_minutes():
@@ -40,19 +41,19 @@ def publish_battery(max_battery, battery_value, timestamp):
     client.publish(BATTERY_TOPIC_STRUCTURE, message)
 
 # MQTT broker configuration
-BROKER = "broker"  # Service name in docker-compose.yml
-PORT = 1883
+BROKER = os.getenv("BROKER", "broker")  # Service name in docker-compose.yml
+PORT = int(os.getenv("PORT", 1883))
 PROD_TOPIC_STRUCTURE = "/producer/{member_id}/{prod_id}"  
 TAUDELTA_TOPIC_STRUCTURE = "/consumer/taudelta/{member_id}/{cons_id}" 
 BATTERY_TOPIC_STRUCTURE = "/battery"
 
 # Let's assume that every step of simulation (one second) is a minute in real life
-STEP_DURATION = 1 # seconds
-SECONDS_IN_A_SIMULATION_STEP = 60
+STEP_DURATION = int(os.getenv("STEP_DURATION", 1))  # seconds
+SECONDS_IN_A_SIMULATION_STEP = int(os.getenv("SECONDS_IN_A_SIMULATION_STEP", 60))
 MINUTES_IN_A_SIMULATION_STEP = SECONDS_IN_A_SIMULATION_STEP / 60
 HOURS_IN_A_SIMULATION_STEP = MINUTES_IN_A_SIMULATION_STEP / 60
 
-TAU_DELTA_INTERVAL_BOUNDS = (60, 90)
+TAU_DELTA_INTERVAL_BOUNDS = tuple(map(int, os.getenv("TAU_DELTA_INTERVAL_BOUNDS", "60,90").split(',')))
 
 # API for aligning tau and delta with dashboard inserts
 app = Flask(__name__)
