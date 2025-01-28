@@ -1,6 +1,8 @@
 import random
 import json
 import time
+import threading
+from flask import Flask, request, jsonify
 import paho.mqtt.client as mqtt
 
 def generate_tau_delta_in_minutes():
@@ -37,8 +39,8 @@ def publish_battery(max_battery, battery_value, timestamp):
     message = f"battery,max_value={max_battery} value={battery_value} {timestamp}"
     client.publish(BATTERY_TOPIC_STRUCTURE, message)
 
-# Configurazione del broker MQTT
-BROKER = "broker"  # Nome del servizio nel docker-compose.yml
+# MQTT broker configuration
+BROKER = "broker"  # Service name in docker-compose.yml
 PORT = 1883
 PROD_TOPIC_STRUCTURE = "/producer/{member_id}/{prod_id}"  
 TAUDELTA_TOPIC_STRUCTURE = "/consumer/taudelta/{member_id}/{cons_id}" 
@@ -52,8 +54,37 @@ HOURS_IN_A_SIMULATION_STEP = MINUTES_IN_A_SIMULATION_STEP / 60
 
 TAU_DELTA_INTERVAL_BOUNDS = (60, 90)
 
+# API for aligning tau and delta with dashboard inserts
+app = Flask(__name__)
 
+@app.route('/update_tau_delta', methods=['POST'])
+def update_tau_delta():
+    data = request.json
+    member_id = data['member_id']
+    consumer_id = data['consumer_id']
+    tau = data['tau']
+    delta = data['delta']
+    
+    if member_id in members and consumer_id in members[member_id]["consumers"]:
+        members[member_id]["consumers"][consumer_id]["tau"] = tau
+        members[member_id]["consumers"][consumer_id]["delta"] = delta
+        members[member_id]["consumers"][consumer_id]["activated"] = False
+        return jsonify({"status": "success"}), 200
+    else:
+        return jsonify({"status": "error", "message": "Invalid member_id or consumer_id"}), 400
+
+@app.route('/health', methods=['GET'])
+def health():
+    return jsonify({"status": "ok"}), 200
+
+def run_api():
+    app.run(host="0.0.0.0", port=5000)
+    
 if __name__ == '__main__':
+    api_thread = threading.Thread(target=run_api)
+    api_thread.daemon = True
+    api_thread.start()
+                
     client = mqtt.Client("sensors")
     client.connect(BROKER, PORT)
     
@@ -84,7 +115,7 @@ if __name__ == '__main__':
                 if consumer_data["delta"] != 0:
                     consumer_data["delta"] -= MINUTES_IN_A_SIMULATION_STEP
                     
-                    # TODO sostituire questo random con una lettura dagli actuators
+                    # TODO replace this random with a reading from actuators
                     # if not consumer_data["activated"]:
                     #     probability = max(0.001, 1 - abs(consumer_data["delta"] - consumer_data["tau"]) / consumer_data["tau"])
                     #     if random.uniform(0, 1) < probability:
@@ -127,11 +158,12 @@ if __name__ == '__main__':
                 members[member_id]["consumers"][consumer_id]["delta"] = delta
             
                 
+
+                
             i = 0
             interval = random.randint(*TAU_DELTA_INTERVAL_BOUNDS)
         
         i += 1
         time.sleep(STEP_DURATION)
-            
-            
-            
+
+
