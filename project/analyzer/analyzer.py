@@ -118,8 +118,14 @@ def get_activable_consumers(consumers: dict, battery_level: float):
     for member in consumers:
         activable_consumers[member] = [] if member not in activable_consumers else activable_consumers[member]
         for consumer in consumers[member]:
-            if not consumers[member][consumer]["active"] and consumers[member][consumer]["cons_required"] > 0 and battery_level > consumers[member][consumer]["cons_required"]:
-                activable_consumers[member].append({"consumer_id": consumer, "cons_required": consumers[member][consumer]["cons_required"], "tau": consumers[member][consumer]["tau"], "delta": consumers[member][consumer]["delta"]})
+            if not consumers[member][consumer]["active"]:
+                delta = consumers[member][consumer]["delta"]
+                tau = consumers[member][consumer]["tau"]
+                isUrgent = True if delta - tau < 15 and tau > 0 else False
+
+                if (consumers[member][consumer]["cons_required"] > 0 and battery_level > consumers[member][consumer]["cons_required"]) or isUrgent:
+                    activable_consumers[member].append({"consumer_id": consumer, "cons_required": consumers[member][consumer]["cons_required"], "tau": tau, "delta": delta, "isUrgent": isUrgent})
+                
         if not activable_consumers[member]:
             del activable_consumers[member]
     return activable_consumers
@@ -135,6 +141,16 @@ def send_activable_consumers(activable_consumers: dict):
         print(f"Failed to send data to the planner API. Status code: {response.status_code}")
 
 
+def print_activable_consumers_in_table(activable_consumers: dict):
+    df = pd.DataFrame.from_dict({(i, j): activable_consumers[i][j] 
+                                    for i in activable_consumers.keys() 
+                                    for j in range(len(activable_consumers[i]))},
+                                orient='index')
+    df.reset_index(inplace=True)
+    df.drop(columns='level_1', inplace=True)
+    df.rename(columns={'level_0': 'member_id'}, inplace=True)
+    print(df.to_string(index=False), flush=True)
+
 if __name__ == '__main__':
 
     consumers = load_sensor_config()
@@ -148,6 +164,6 @@ if __name__ == '__main__':
         if activable_consumers:
             message = {"members": activable_consumers, "battery": battery_level}
             send_activable_consumers(message)
-            # print(activable_consumers, flush=True)
-            pass
+            # print_activable_consumers_in_table(activable_consumers)
+            
         time.sleep(1)
