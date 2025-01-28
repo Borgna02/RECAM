@@ -75,9 +75,9 @@ if __name__ == '__main__':
                     consumer_data["delta"] -= MINUTES_IN_A_SIMULATION_STEP
                     
                     # TODO sostituire questo random con una lettura dagli actuators
-                    if random.uniform(0,1) < 0.001 and not consumer_data["activated"]:
-                        consumer_data["activated"] = True
-                        print(f"Consumer {consumer_id} in member {member} activated", flush=True)
+                    # if random.uniform(0,1) < 0.001 and not consumer_data["activated"]:
+                    #     consumer_data["activated"] = True
+                    #     print(f"Consumer {consumer_id} in member {member} activated", flush=True)
                     
                 if consumer_data["activated"]:
                     consumer_data["tau"] -= MINUTES_IN_A_SIMULATION_STEP
@@ -88,7 +88,7 @@ if __name__ == '__main__':
                     battery_delta -= consumer_data["cons"] * HOURS_IN_A_SIMULATION_STEP
                         
                 topic = TAUDELTA_TOPIC_STRUCTURE.format(member_id=member, cons_id=consumer_id)
-                message = f"tau_delta,consumer_id={consumer_id},member_id={member} tau={consumer_data['tau']},delta={consumer_data['delta']} {timestamp}"
+                message = f"tau_delta,consumer_id={consumer_id},member_id={member} active={consumer_data['activated']},tau={consumer_data['tau']},delta={consumer_data['delta']} {timestamp}"
                 client.publish(topic, message)
             
         battery_value = min(battery_value + battery_delta, battery_info["max-capacity"])
@@ -114,7 +114,7 @@ if __name__ == '__main__':
             tau, delta = generate_tau_delta_in_minutes()
             topic = TAUDELTA_TOPIC_STRUCTURE.format(member_id=member_id, cons_id=consumer_id)
             
-            message = f"tau_delta,consumer_id={consumer_id},member_id={member_id} tau={tau},delta={delta} {timestamp}"
+            message = f"tau_delta,consumer_id={consumer_id},member_id={member_id} active={consumer_data['activated']},tau={tau},delta={delta} {timestamp}"
             client.publish(topic, message)
             
             # Update the configuration

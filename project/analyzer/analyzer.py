@@ -9,6 +9,14 @@ import warnings
 from influxdb_client.client.warnings import MissingPivotFunction
 warnings.simplefilter("ignore", MissingPivotFunction)
 
+
+BUCKET = os.getenv('INFLUXDB_BUCKET')
+TOKEN = os.getenv('INFLUXDB_TOKEN')
+ORG = os.getenv('INFLUXDB_ORG')
+URL = os.getenv('INFLUXDB_URL')
+PLANNER_API = os.getenv('PLANNER_API')
+
+
 def load_sensor_config() -> dict:
     with open('config/REC.json', 'r') as file:
         config = json.load(file)
@@ -20,6 +28,7 @@ def load_sensor_config() -> dict:
         for consumer_id in config["members"][member]["consumers"]:
             config["members"][member]["consumers"][consumer_id]["tau"] = 0
             config["members"][member]["consumers"][consumer_id]["delta"] = 0
+            config["members"][member]["consumers"][consumer_id]["active"] = False
             config["members"][member]["consumers"][consumer_id]["cons_required"] = 0
 
         consumers[member] = config["members"][member]["consumers"]
@@ -37,7 +46,16 @@ def query_influxdb(query: str):
     retries = 10
     for attempt in range(retries):
         try:
-            return query_api.query_data_frame(query)
+            query_result = query_api.query_data_frame(query)
+            
+            # Controlla se query_result è una lista
+            if isinstance(query_result, list):
+                # Concatena i DataFrame se ci sono più risultati
+                return pd.concat(query_result, ignore_index=True)
+            else:
+                # Ritorna direttamente il DataFrame se è un singolo risultato
+                return query_result
+
         except Exception as e:
             print(f"Attempt {attempt + 1} failed: {e}", flush=True)
             if attempt < retries - 1:
@@ -46,8 +64,8 @@ def query_influxdb(query: str):
                 raise
 
 
+# Get the current battery level from InfluxDB
 def get_battery_level():
-    BUCKET = os.getenv('INFLUXDB_BUCKET')
     query = f"""
         from(bucket: "{BUCKET}")
             |> range(start: -30s)
@@ -58,9 +76,8 @@ def get_battery_level():
 
     return query_influxdb(query)["value"].values[0]
 
-
+# Get the current tau and delta values from InfluxDB
 def update_tau_delta(consumers: dict):
-    BUCKET = os.getenv('INFLUXDB_BUCKET')
     query = f"""
         from(bucket: "{BUCKET}")
             |> range(start: -30s)
@@ -81,10 +98,13 @@ def update_tau_delta(consumers: dict):
                 consumers[member_id][consumer_id]["tau"] = value
             elif field == "delta":
                 consumers[member_id][consumer_id]["delta"] = value
+            elif field == "active":
+                consumers[member_id][consumer_id]["active"] = value
+                
 
     return consumers
 
-
+# Calculate the required consumption for each consumer
 def calculate_cons_required(consumers: dict):
     for member in consumers:
         for consumer in consumers[member]:
@@ -92,16 +112,19 @@ def calculate_cons_required(consumers: dict):
             
     return consumers
 
+# Get the consumers that can be activated
 def get_activable_consumers(consumers: dict, battery_level: float):
     activable_consumers = {}
     for member in consumers:
+        activable_consumers[member] = [] if member not in activable_consumers else activable_consumers[member]
         for consumer in consumers[member]:
-            if consumers[member][consumer]["cons_required"] > 0 and battery_level > consumers[member][consumer]["cons_required"]:
-                activable_consumers[member] = {"consumer_id": consumer, "cons_required": consumers[member][consumer]["cons_required"], "tau": consumers[member][consumer]["tau"], "delta": consumers[member][consumer]["delta"]}
+            if not consumers[member][consumer]["active"] and consumers[member][consumer]["cons_required"] > 0 and battery_level > consumers[member][consumer]["cons_required"]:
+                activable_consumers[member].append({"consumer_id": consumer, "cons_required": consumers[member][consumer]["cons_required"], "tau": consumers[member][consumer]["tau"], "delta": consumers[member][consumer]["delta"]})
+        if not activable_consumers[member]:
+            del activable_consumers[member]
     return activable_consumers
 
 def send_activable_consumers(activable_consumers: dict):
-    PLANNER_API = os.getenv('PLANNER_API')
     url = f"{PLANNER_API}/activable_consumers"
     headers = {'Content-Type': 'application/json'}
     response = requests.post(url, headers=headers, json=activable_consumers)
@@ -115,7 +138,6 @@ def send_activable_consumers(activable_consumers: dict):
 if __name__ == '__main__':
 
     consumers = load_sensor_config()
-    print(consumers, flush=True)
     time.sleep(10)
     while True:
         battery_level = get_battery_level()
@@ -124,7 +146,8 @@ if __name__ == '__main__':
         activable_consumers = get_activable_consumers(consumers, battery_level)
         
         if activable_consumers:
-            # send_activable_consumers(activable_consumers)
-            print(activable_consumers, flush=True)
-        
+            message = {"members": activable_consumers, "battery": battery_level}
+            send_activable_consumers(message)
+            # print(activable_consumers, flush=True)
+            pass
         time.sleep(1)
