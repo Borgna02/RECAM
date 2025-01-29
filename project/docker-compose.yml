@@ -43,6 +43,12 @@ services:
     build:
       context: ./sensors
     container_name: sensors
+    environment:
+      - BROKER=broker  # Service name in docker-compose.yml
+      - PORT=1883
+      - STEP_DURATION=1
+      - SECONDS_IN_A_SIMULATION_STEP=60
+      - TAU_DELTA_INTERVAL_BOUNDS=60,90
     depends_on:
       - broker
       - knowledge
@@ -51,7 +57,8 @@ services:
       - recam_network
     volumes:
       - ./recam-config:/app/config
-
+    ports:
+      - "5001:5000"
   analyzer:
     build:
       context: ./analyzer
@@ -61,7 +68,7 @@ services:
       - INFLUXDB_TOKEN=token
       - INFLUXDB_ORG=RECAM
       - INFLUXDB_BUCKET=RECAM
-      - PLANNER_API=http://planner:8080
+      - PLANNER_API=http://planner:5000
     depends_on:
       - sensors
     networks:
@@ -116,6 +123,41 @@ services:
       - ./grafana:/var/lib/grafana
     networks:
       - recam_network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: go-backend
+    depends_on:
+      - knowledge
+    ports:
+      - "8080:8080"
+    networks:
+      - recam_network
+    environment:
+      - PORT=8080
+      - FRONTEND_URL=http://frontend:4000
+      - INFLUXDB_URL=http://knowledge:8086
+      - INFLUXDB_TOKEN=token
+      - INFLUXDB_ORG=RECAM
+      - INFLUXDB_BUCKET=RECAM
+      - SENSORS_API=http://sensors:5000
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: react-frontend
+    ports:
+      - "4000:80"
+    networks:
+      - recam_network
+    depends_on:
+      - backend
+    environment:
+      - REACT_APP_BACKEND_URL=http://backend:8080
+
 
 volumes:
   knowledge_v: 
