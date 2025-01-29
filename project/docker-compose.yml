@@ -68,7 +68,7 @@ services:
       - INFLUXDB_TOKEN=token
       - INFLUXDB_ORG=RECAM
       - INFLUXDB_BUCKET=RECAM
-      - PLANNER_API=http://planner:5000
+      - PLANNER_API=http://planner:8080
     depends_on:
       - sensors
     networks:
