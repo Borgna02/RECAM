@@ -80,6 +80,9 @@ services:
     build:
       context: ./planner
     container_name: planner
+    environment:
+      - BROKER=broker 
+      - PORT=1883
     depends_on:
       - analyzer
     networks:
@@ -91,6 +94,9 @@ services:
     build:
       context: ./executor
     container_name: executor
+    environment:
+      - BROKER=broker 
+      - PORT=1883
     depends_on:
       - planner
     networks:
@@ -102,6 +108,9 @@ services:
     build:
       context: ./actuators
     container_name: actuators
+    environment:
+      - BROKER=broker 
+      - PORT=1883
     depends_on:
       - executor
     networks:

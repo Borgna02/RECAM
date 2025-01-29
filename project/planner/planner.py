@@ -1,9 +1,11 @@
 import json
+import os
 from bottle import Bottle, request, run
 import paho.mqtt.client as mqtt
 
 # MQTT broker configuration
-BROKER_ADDRESS = "localhost"
+BROKER = os.getenv("BROKER", "broker")  # Service name in docker-compose.yml
+PORT = int(os.getenv("PORT", 1883))
 MQTT_TOPIC = "/consumer/activation"
 
 # Bottle app
@@ -67,7 +69,7 @@ def send_to_executor(activable_consumers):
     :param activable_consumers: Dictionary of activable consumers grouped by member
     """
     client = mqtt.Client()
-    client.connect(BROKER_ADDRESS)
+    client.connect(PORT)
 
     for member_id, consumers in activable_consumers.items():
         if consumers:  # Only send if there are consumers to activate

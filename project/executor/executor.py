@@ -1,9 +1,11 @@
 import json
+import os
 from bottle import Bottle, request, run
 import paho.mqtt.client as mqtt
 
 # MQTT broker configuration
-BROKER_ADDRESS = "localhost"  # Replace with your broker's address
+BROKER = os.getenv("BROKER", "broker")  # Service name in docker-compose.yml
+PORT = int(os.getenv("PORT", 1883))
 MQTT_TOPIC = "/consumer/activation"  # Topic for publishing activation commands
 
 # Initialize the Bottle app
@@ -14,8 +16,8 @@ mqtt_client = mqtt.Client()
 
 # Connect to the MQTT broker
 def connect_mqtt():
-    print(f"Connecting to MQTT broker at {BROKER_ADDRESS}...")
-    mqtt_client.connect(BROKER_ADDRESS)
+    print(f"Connecting to MQTT broker at {PORT}...")
+    mqtt_client.connect(PORT)
     print("Connected to MQTT broker successfully!")
 
 # API endpoint to receive activation commands from the Planner

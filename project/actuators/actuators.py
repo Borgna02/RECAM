@@ -1,8 +1,10 @@
 import json
+import os
 import paho.mqtt.client as mqtt
 
 # MQTT broker configuration
-BROKER_ADDRESS = "localhost"  # Replace with your broker's address
+BROKER = os.getenv("BROKER", "broker")  # Service name in docker-compose.yml
+PORT = int(os.getenv("PORT", 1883))
 MQTT_TOPIC = "/consumer/activation"
 
 # Callback for when the client connects to the MQTT broker
@@ -47,8 +49,8 @@ def main():
     client.on_message = on_message
 
     # Connect to the MQTT broker
-    print(f"Connecting to MQTT broker at {BROKER_ADDRESS}...")
-    client.connect(BROKER_ADDRESS)
+    print(f"Connecting to MQTT broker at {PORT}...")
+    client.connect(PORT)
 
     # Start the MQTT client loop to listen for messages
     client.loop_forever()
