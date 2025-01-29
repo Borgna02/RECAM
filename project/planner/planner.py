@@ -69,7 +69,7 @@ def send_to_executor(activable_consumers):
     :param activable_consumers: Dictionary of activable consumers grouped by member
     """
     client = mqtt.Client()
-    client.connect(PORT)
+    client.connect(BROKER, PORT)
 
     for member_id, consumers in activable_consumers.items():
         if consumers:  # Only send if there are consumers to activate

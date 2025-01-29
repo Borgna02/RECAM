@@ -1,3 +1,4 @@
+
 import json
 import os
 from bottle import Bottle, request, run
@@ -17,7 +18,7 @@ mqtt_client = mqtt.Client()
 # Connect to the MQTT broker
 def connect_mqtt():
     print(f"Connecting to MQTT broker at {PORT}...")
-    mqtt_client.connect(PORT)
+    mqtt_client.connect(BROKER, PORT)
     print("Connected to MQTT broker successfully!")
 
 # API endpoint to receive activation commands from the Planner

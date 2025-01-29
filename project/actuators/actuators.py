@@ -50,7 +50,7 @@ def main():
 
     # Connect to the MQTT broker
     print(f"Connecting to MQTT broker at {PORT}...")
-    client.connect(PORT)
+    client.connect(BROKER, PORT)
 
     # Start the MQTT client loop to listen for messages
     client.loop_forever()
