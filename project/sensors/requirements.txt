@@ -1,2 +1,2 @@
 paho-mqtt<2.0.0
-Flask==3.0.3
+bottle==0.13.2
