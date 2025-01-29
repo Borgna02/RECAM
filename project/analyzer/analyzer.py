@@ -132,13 +132,25 @@ def get_activable_consumers(consumers: dict, battery_level: float):
 
 def send_activable_consumers(activable_consumers: dict):
     url = f"{PLANNER_API}/activable_consumers"
+    print(url, flush=True)
     headers = {'Content-Type': 'application/json'}
-    response = requests.post(url, headers=headers, json=activable_consumers)
-
-    if response.status_code == 200:
-        print("Data successfully sent to the planner API.")
-    else:
-        print(f"Failed to send data to the planner API. Status code: {response.status_code}")
+    retries = 5
+    for attempt in range(retries):
+        try:
+            response = requests.post(url, headers=headers, json=activable_consumers)
+            if response.status_code == 200:
+                print("Data successfully sent to the planner API.", flush=True)
+                break
+            else:
+                print(f"Failed to send data to the planner API. Status code: {response.status_code}", flush=True)
+                if attempt < retries - 1:
+                    time.sleep(5)
+        except requests.exceptions.ConnectionError as e:
+            print(f"Attempt {attempt + 1} failed: {e}", flush=True)
+            if attempt < retries - 1:
+                time.sleep(5)
+            else:
+                print("Max retries exceeded. Could not connect to the planner API.", flush=True)
 
 
 def print_activable_consumers_in_table(activable_consumers: dict):
@@ -164,6 +176,6 @@ if __name__ == '__main__':
         if activable_consumers:
             message = {"members": activable_consumers, "battery": battery_level}
             send_activable_consumers(message)
-            # print_activable_consumers_in_table(activable_consumers)
+            print_activable_consumers_in_table(activable_consumers)
             
         time.sleep(1)

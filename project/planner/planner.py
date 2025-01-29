@@ -38,6 +38,10 @@ def choose_consumers(data):
 
     return activable
 
+@app.get('/')
+def index():
+    return {'status': 'running'}
+
 # Route to handle activable consumers
 @app.post('/activable_consumers')
 def activable_consumers():
@@ -45,6 +49,7 @@ def activable_consumers():
     Receive a list of consumers that can be activated and determine which ones to activate.
     """
     try:
+        print("Received activable consumers:", request.json, flush=True)
         # Parse the input JSON
         data = request.json
         if not data or 'members' not in data or 'battery' not in data:

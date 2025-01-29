@@ -85,6 +85,8 @@ services:
       - PORT=1883
     depends_on:
       - analyzer
+    ports:
+      - "8081:8080"
     networks:
       - recam_network
     volumes:
