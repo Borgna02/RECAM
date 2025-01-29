@@ -2,7 +2,7 @@ import random
 import json
 import time
 import threading
-from flask import Flask, request, jsonify
+from bottle import Bottle, request, response, run
 import os
 import paho.mqtt.client as mqtt
 
@@ -56,9 +56,9 @@ HOURS_IN_A_SIMULATION_STEP = MINUTES_IN_A_SIMULATION_STEP / 60
 TAU_DELTA_INTERVAL_BOUNDS = tuple(map(int, os.getenv("TAU_DELTA_INTERVAL_BOUNDS", "60,90").split(',')))
 
 # API for aligning tau and delta with dashboard inserts
-app = Flask(__name__)
+app = Bottle()
 
-@app.route('/update_tau_delta', methods=['POST'])
+@app.post('/update_tau_delta')
 def update_tau_delta():
     data = request.json
     member_id = data['member_id']
@@ -70,16 +70,20 @@ def update_tau_delta():
         members[member_id]["consumers"][consumer_id]["tau"] = tau
         members[member_id]["consumers"][consumer_id]["delta"] = delta
         members[member_id]["consumers"][consumer_id]["activated"] = False
-        return jsonify({"status": "success"}), 200
+        response.content_type = 'application/json'
+        return json.dumps({"status": "success"})
     else:
-        return jsonify({"status": "error", "message": "Invalid member_id or consumer_id"}), 400
+        response.status = 400
+        response.content_type = 'application/json'
+        return json.dumps({"status": "error", "message": "Invalid member_id or consumer_id"})
 
-@app.route('/health', methods=['GET'])
+@app.get('/health')
 def health():
-    return jsonify({"status": "ok"}), 200
+    response.content_type = 'application/json'
+    return json.dumps({"status": "ok"})
 
 def run_api():
-    app.run(host="0.0.0.0", port=5000)
+    run(app, host="0.0.0.0", port=5000)
     
 if __name__ == '__main__':
     api_thread = threading.Thread(target=run_api)
