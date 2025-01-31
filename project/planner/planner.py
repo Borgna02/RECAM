@@ -23,16 +23,16 @@ def choose_consumers(data):
     :return: Dictionary of activable consumers grouped by member
     """
     battery_level = data['battery']  # Battery level in kWh
-    members = data['members']
+    members:dict = data['members']
     activable = {}
 
     for member_id, consumers in members.items():
         # Separate urgent and non-urgent consumers
         urgent_consumers = [
-            consumer for consumer in consumers.values() if consumer['isUrgent']
+            consumer for consumer in consumers if consumer['isUrgent']
         ]
         non_urgent_consumers = [
-            consumer for consumer in consumers.values() if not consumer['isUrgent']
+            consumer for consumer in consumers if not consumer['isUrgent']
         ]
 
         # Sort urgent consumers by (delta - tau), tight deadlines first
@@ -110,6 +110,8 @@ def activable_consumers():
 
         # Decide which consumers to activate
         activable = choose_consumers(data)
+        
+        print(type(activable), activable, flush=True)
 
         # If there are activable consumers, send them to the Executor
         if any(activable.values()):
@@ -126,7 +128,7 @@ def activable_consumers():
                 headers={"Content-Type": "application/json"}
             )
     except Exception as e:
-        logging.error(f"Error processing request: {e}")
+        print(f"Error processing request: {e}", flush=True)
         return HTTPResponse(
             body=json.dumps({"error": str(e)}),
             status=500,
