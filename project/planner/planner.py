@@ -1,16 +1,14 @@
 import json
 import os
 from bottle import Bottle, request, run, HTTPResponse
-import paho.mqtt.client as mqtt
+import requests
 import logging
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
-# MQTT broker configuration
-BROKER = os.getenv("BROKER", "broker")  # Service name in docker-compose.yml
-PORT = int(os.getenv("PORT", 1883))
-MQTT_TOPIC = "commands/{member_id}/{consumer_id}"  # Dynamic topic structure
+# Executor API configuration
+EXECUTOR_API = os.getenv("EXECUTOR_API", "http://executor:8081")
 
 # Bottle app
 app = Bottle()
@@ -23,7 +21,7 @@ def choose_consumers(data):
     :return: Dictionary of activable consumers grouped by member
     """
     battery_level = data['battery']  # Battery level in kWh
-    members:dict = data['members']
+    members = data['members']
     activable = {}
 
     for member_id, consumers in members.items():
@@ -67,28 +65,22 @@ def choose_consumers(data):
 
     return activable
 
-# Function to send activable consumers to the executor via MQTT
+# Function to send activable consumers to the executor via HTTP
 def send_to_executor(activable_consumers):
     """
-    Send the activable consumers to the executor via MQTT.
+    Send the activable consumers to the executor via HTTP.
     :param activable_consumers: Dictionary of activable consumers grouped by member
     """
-    client = mqtt.Client()
+    url = f"{EXECUTOR_API}/commands"
+    headers = {'Content-Type': 'application/json'}
     try:
-        client.connect(BROKER, PORT)
-        for member_id, consumers in activable_consumers.items():
-            for consumer in consumers:
-                topic = MQTT_TOPIC.format(
-                    member_id=member_id,
-                    consumer_id=consumer["consumer_id"]
-                )
-                payload = json.dumps(consumer)
-                client.publish(topic, payload)
-                logging.info(f"Published to {topic}: {payload}")
+        response = requests.post(url, headers=headers, json=activable_consumers)
+        if response.status_code == 200:
+            logging.info("Commands successfully sent to the executor.")
+        else:
+            logging.error(f"Failed to send commands to the executor. Status code: {response.status_code}")
     except Exception as e:
-        logging.error(f"Failed to send MQTT message: {e}")
-    finally:
-        client.disconnect()
+        logging.error(f"Error sending commands to the executor: {e}")
 
 # Route to handle activable consumers
 @app.post('/activable_consumers')
@@ -110,8 +102,6 @@ def activable_consumers():
 
         # Decide which consumers to activate
         activable = choose_consumers(data)
-        
-        print(type(activable), activable, flush=True)
 
         # If there are activable consumers, send them to the Executor
         if any(activable.values()):
@@ -128,7 +118,7 @@ def activable_consumers():
                 headers={"Content-Type": "application/json"}
             )
     except Exception as e:
-        print(f"Error processing request: {e}", flush=True)
+        logging.error(f"Error processing request: {e}")
         return HTTPResponse(
             body=json.dumps({"error": str(e)}),
             status=500,
