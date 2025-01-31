@@ -15,6 +15,7 @@ TOKEN = os.getenv('INFLUXDB_TOKEN')
 ORG = os.getenv('INFLUXDB_ORG')
 URL = os.getenv('INFLUXDB_URL')
 PLANNER_API = os.getenv('PLANNER_API')
+IS_URGENT_THRESHOLD = int(os.getenv('IS_URGENT_THRESHOLD'))
 
 
 def load_sensor_config() -> dict:
@@ -121,7 +122,7 @@ def get_activable_consumers(consumers: dict, battery_level: float):
             if not consumers[member][consumer]["active"]:
                 delta = consumers[member][consumer]["delta"]
                 tau = consumers[member][consumer]["tau"]
-                isUrgent = True if delta - tau < 15 and tau > 0 else False
+                isUrgent = True if delta - tau < IS_URGENT_THRESHOLD and tau > 0 else False
 
                 if (consumers[member][consumer]["cons_required"] > 0 and battery_level > consumers[member][consumer]["cons_required"]) or isUrgent:
                     activable_consumers[member].append({"consumer_id": consumer, "cons_required": consumers[member][consumer]["cons_required"], "tau": tau, "delta": delta, "isUrgent": isUrgent})
@@ -132,7 +133,6 @@ def get_activable_consumers(consumers: dict, battery_level: float):
 
 def send_activable_consumers(activable_consumers: dict):
     url = f"{PLANNER_API}/activable_consumers"
-    print(url, flush=True)
     headers = {'Content-Type': 'application/json'}
     retries = 5
     for attempt in range(retries):
@@ -163,9 +163,12 @@ def print_activable_consumers_in_table(activable_consumers: dict):
     df.rename(columns={'level_0': 'member_id'}, inplace=True)
     print(df.to_string(index=False), flush=True)
 
+
+SIMULATION_STEP = int(os.getenv('SIMULATION_STEP', 1))
 if __name__ == '__main__':
 
     consumers = load_sensor_config()
+    print("Starting simulation with simulation step", SIMULATION_STEP, flush=True)
     time.sleep(10)
     while True:
         battery_level = get_battery_level()
@@ -178,4 +181,4 @@ if __name__ == '__main__':
             send_activable_consumers(message)
             print_activable_consumers_in_table(activable_consumers)
             
-        time.sleep(1)
+        time.sleep(SIMULATION_STEP)

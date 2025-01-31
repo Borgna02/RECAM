@@ -57,13 +57,9 @@ def choose_consumers(data):
                     "action": "activate"
                 })
                 battery_level -= consumer['cons_required']  # Deduct battery usage
-            else:
-                activable[member_id].append({
-                    "consumer_id": consumer["consumer_id"],
-                    "action": "deactivate"
-                })
 
     return activable
+
 
 # Function to send activable consumers to the executor via HTTP
 def send_to_executor(activable_consumers):

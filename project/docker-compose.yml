@@ -48,7 +48,7 @@ services:
       - PORT=1883
       - STEP_DURATION=1
       - SECONDS_IN_A_SIMULATION_STEP=60
-      - TAU_DELTA_INTERVAL_BOUNDS=60,90
+      - TAU_DELTA_INTERVAL_BOUNDS=45,90
     depends_on:
       - broker
       - knowledge
@@ -69,6 +69,8 @@ services:
       - INFLUXDB_ORG=RECAM
       - INFLUXDB_BUCKET=RECAM
       - PLANNER_API=http://planner:8080
+      - SIMULATION_STEP=2
+      - IS_URGENT_THRESHOLD=30
     depends_on:
       - sensors
     networks:
@@ -116,6 +118,7 @@ services:
     environment:
       - BROKER=broker 
       - PORT=1883
+      - SENSORS_API=http://sensors:5000
     depends_on:
       - executor
     networks:
@@ -131,6 +134,7 @@ services:
     environment:
       - GF_SECURITY_ADMIN_USER=admin
       - GF_SECURITY_ADMIN_PASSWORD=recam123
+      - GF_LOG_LEVEL=error
     ports:
       - '3000:3000'
     volumes:
@@ -172,6 +176,14 @@ services:
     environment:
       - REACT_APP_BACKEND_URL=http://backend:8080
 
+  subscriber:
+    image: eclipse-mosquitto
+    container_name: mqtt-subscriber
+    depends_on:
+      - broker
+    entrypoint: ["mosquitto_sub", "-h", "broker", "-t", "/consumer/activation/#", "-v"]
+    networks:
+      - recam_network
 
 volumes:
   knowledge_v: 
