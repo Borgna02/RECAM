@@ -1,67 +1,92 @@
-
 import json
 import os
-from bottle import Bottle, request, run
+from bottle import Bottle, run
 import paho.mqtt.client as mqtt
+import logging
+
+# Configure logging
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
 # MQTT broker configuration
 BROKER = os.getenv("BROKER", "broker")  # Service name in docker-compose.yml
 PORT = int(os.getenv("PORT", 1883))
-MQTT_TOPIC = "/consumer/activation"  # Topic for publishing activation commands
+MQTT_TOPIC = "commands/+/+"  # Subscribe to all commands
 
-# Initialize the Bottle app
+# Bottle app (optional, for health checks or additional APIs)
 app = Bottle()
 
-# Initialize the MQTT client
-mqtt_client = mqtt.Client()
-
-# Connect to the MQTT broker
-def connect_mqtt():
-    print(f"Connecting to MQTT broker at {PORT}...")
-    mqtt_client.connect(BROKER, PORT)
-    print("Connected to MQTT broker successfully!")
-
-# API endpoint to receive activation commands from the Planner
-@app.post('/execute')
-def execute():
+# MQTT on_message callback
+def on_message(client, userdata, message):
     """
-    API endpoint to receive activation decisions from the Planner.
-    Expects JSON data with the format:
-    {
-        "m1": { "consumers": ["c3", "c4"] },
-        "m2": { "consumers": ["c5"] }
-    }
+    Callback function to handle incoming MQTT messages.
     """
     try:
-        # Parse the JSON payload from the request
-        data = request.json
-        if not data:
-            return {"error": "Invalid or missing JSON payload"}, 400
+        # Decode the message payload
+        payload = message.payload.decode("utf-8")
+        command = json.loads(payload)
+        logging.info(f"Received command: {command}")
 
-        print(f"Received activation data: {json.dumps(data, indent=2)}")
+        # Extract topic information
+        topic_parts = message.topic.split("/")
+        member_id = topic_parts[1]
+        consumer_id = topic_parts[2]
 
-        # Publish activation messages to the MQTT broker
-        for member_id, details in data.items():
-            consumers = details.get("consumers", [])
-            if consumers:
-                payload = json.dumps({member_id: {"consumers": consumers}})
-                mqtt_client.publish(MQTT_TOPIC, payload)
-                print(f"Published to {MQTT_TOPIC}: {payload}")
-
-        return {"status": "success", "message": "Activation commands published"}, 200
+        # Process the command (e.g., send to actuators or log the action)
+        process_command(member_id, consumer_id, command)
 
     except Exception as e:
-        print(f"Error in execute endpoint: {str(e)}")
-        return {"error": str(e)}, 500
+        logging.error(f"Error processing MQTT message: {e}")
 
-# Main function to start the Executor
-def main():
-    # Connect to MQTT broker
-    connect_mqtt()
+# Function to process commands
+def process_command(member_id, consumer_id, command):
+    """
+    Process a command (e.g., activate or deactivate a consumer).
+    :param member_id: ID of the member
+    :param consumer_id: ID of the consumer
+    :param command: Command dictionary (e.g., {"action": "activate"})
+    """
+    action = command.get("action")
+    if action == "activate":
+        logging.info(f"Activating consumer {consumer_id} for member {member_id}")
+        # TODO: Send signal to actuator or perform activation logic
+    elif action == "deactivate":
+        logging.info(f"Deactivating consumer {consumer_id} for member {member_id}")
+        # TODO: Send signal to actuator or perform deactivation logic
+    else:
+        logging.warning(f"Unknown action: {action}")
 
-    # Start the Bottle server
-    print("Starting Executor API server on port 8081...")
-    run(app, host="0.0.0.0", port=8081)
+# Set up MQTT client
+def setup_mqtt_client():
+    """
+    Set up and connect the MQTT client.
+    """
+    client = mqtt.Client()
+    client.on_message = on_message
 
+    try:
+        client.connect(BROKER, PORT, 60)
+        client.subscribe(MQTT_TOPIC)
+        logging.info(f"Subscribed to MQTT topic: {MQTT_TOPIC}")
+        return client
+    except Exception as e:
+        logging.error(f"Failed to connect to MQTT broker: {e}")
+        raise
+
+# Bottle route for health check
+@app.get('/health')
+def health_check():
+    """
+    Health check endpoint.
+    """
+    return {"status": "ok"}
+
+# Run the executor
 if __name__ == "__main__":
-    main()
+    # Set up MQTT client
+    mqtt_client = setup_mqtt_client()
+
+    # Start the MQTT loop in a non-blocking way
+    mqtt_client.loop_start()
+
+    # Start the Bottle server (optional, for health checks or additional APIs)
+    run(app, host="0.0.0.0", port=8081)

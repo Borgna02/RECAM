@@ -83,6 +83,7 @@ services:
     environment:
       - BROKER=broker 
       - PORT=1883
+      - EXECUTER_API=http://executor:8081
     depends_on:
       - analyzer
     ports:
@@ -105,6 +106,8 @@ services:
       - recam_network
     volumes:
       - ./recam-config:/app/config
+    ports:
+      - "8082:8081"
 
   actuators:
     build:

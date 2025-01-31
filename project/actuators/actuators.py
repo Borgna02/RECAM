@@ -1,59 +1,77 @@
 import json
 import os
 import paho.mqtt.client as mqtt
+import logging
+
+# Configure logging
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
 # MQTT broker configuration
 BROKER = os.getenv("BROKER", "broker")  # Service name in docker-compose.yml
 PORT = int(os.getenv("PORT", 1883))
-MQTT_TOPIC = "/consumer/activation"
+MQTT_TOPIC = "commands/+/+"  # Subscribe to all commands
 
-# Callback for when the client connects to the MQTT broker
-def on_connect(client, userdata, flags, rc):
-    if rc == 0:
-        print("Connected to MQTT broker successfully!")
-        client.subscribe(MQTT_TOPIC)  # Subscribe to the activation topic
-        print(f"Subscribed to topic: {MQTT_TOPIC}")
-    else:
-        print(f"Failed to connect, return code {rc}")
-
-# Callback for when a message is received on a subscribed topic
+# MQTT on_message callback
 def on_message(client, userdata, message):
+    """
+    Callback function to handle incoming MQTT messages.
+    """
     try:
         # Decode the message payload
-        payload = json.loads(message.payload.decode())
-        print(f"Received activation message: {json.dumps(payload, indent=2)}")
-        
-        # Process the activation message
-        for member_id, data in payload.items():
-            consumers = data.get('consumers', [])
-            for consumer_id in consumers:
-                # Simulate activation of the consumer
-                activate_consumer(member_id, consumer_id)
+        payload = message.payload.decode("utf-8")
+        command = json.loads(payload)
+        logging.info(f"Received command: {command}")
+
+        # Extract topic information
+        topic_parts = message.topic.split("/")
+        member_id = topic_parts[1]
+        consumer_id = topic_parts[2]
+
+        # Process the command (e.g., turn on/off a device)
+        process_command(member_id, consumer_id, command)
+
     except Exception as e:
-        print(f"Error processing message: {str(e)}")
+        logging.error(f"Error processing MQTT message: {e}")
 
-# Function to simulate the activation of a consumer device
-def activate_consumer(member_id, consumer_id):
-    print(f"Activating consumer {consumer_id} for member {member_id}")
-    # Here you can implement actual hardware interaction (e.g., GPIO toggling)
-    # For now, we are just simulating the activation
-    # For example: GPIO.output(consumer_id, GPIO.HIGH)
+# Function to process commands
+def process_command(member_id, consumer_id, command):
+    """
+    Process a command (e.g., activate or deactivate a device).
+    :param member_id: ID of the member
+    :param consumer_id: ID of the consumer
+    :param command: Command dictionary (e.g., {"action": "activate"})
+    """
+    action = command.get("action")
+    if action == "activate":
+        logging.info(f"Activating device for consumer {consumer_id} (Member: {member_id})")
+        # TODO: Implement device activation logic (e.g., turn on a relay)
+    elif action == "deactivate":
+        logging.info(f"Deactivating device for consumer {consumer_id} (Member: {member_id})")
+        # TODO: Implement device deactivation logic (e.g., turn off a relay)
+    else:
+        logging.warning(f"Unknown action: {action}")
 
-# Main function
-def main():
-    # Initialize the MQTT client
+# Set up MQTT client
+def setup_mqtt_client():
+    """
+    Set up and connect the MQTT client.
+    """
     client = mqtt.Client()
-
-    # Assign the callback functions
-    client.on_connect = on_connect
     client.on_message = on_message
 
-    # Connect to the MQTT broker
-    print(f"Connecting to MQTT broker at {PORT}...")
-    client.connect(BROKER, PORT)
+    try:
+        client.connect(BROKER, PORT, 60)
+        client.subscribe(MQTT_TOPIC)
+        logging.info(f"Subscribed to MQTT topic: {MQTT_TOPIC}")
+        return client
+    except Exception as e:
+        logging.error(f"Failed to connect to MQTT broker: {e}")
+        raise
 
-    # Start the MQTT client loop to listen for messages
-    client.loop_forever()
-
+# Run the actuator
 if __name__ == "__main__":
-    main()
+    # Set up MQTT client
+    mqtt_client = setup_mqtt_client()
+
+    # Start the MQTT loop (blocking)
+    mqtt_client.loop_forever()
