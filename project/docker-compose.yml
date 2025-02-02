@@ -48,7 +48,7 @@ services:
       - PORT=1883
       - STEP_DURATION=1
       - SECONDS_IN_A_SIMULATION_STEP=60
-      - TAU_DELTA_INTERVAL_BOUNDS=45,90
+      - TAU_DELTA_INTERVAL_BOUNDS=60,120
     depends_on:
       - broker
       - knowledge

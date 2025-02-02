@@ -2,125 +2,141 @@ import json
 import os
 from bottle import Bottle, request, run, HTTPResponse
 import requests
-import logging
 
-# Configure logging
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+# Debug mechanism based on environment variable
+DEBUG = os.getenv("DEBUG", "False").lower() in ("true", "1", "yes")
 
-# Executor API configuration
+def debug_print(msg):
+    if DEBUG:
+        print(msg, flush=True)
+
+# Executor API configuration using environment variable
 EXECUTOR_API = os.getenv("EXECUTOR_API", "http://executor:8081")
 
-# Bottle app
-app = Bottle()
-
-# Helper function to determine activable consumers
-def choose_consumers(data):
+class Planner:
     """
-    Decide which consumers to activate based on battery level, urgency, and constraints.
-    :param data: JSON data from the request
-    :return: Dictionary of activable consumers grouped by member
+    Handles the logic for deciding which consumers to activate
+    based on battery level, urgency, and other constraints,
+    and sends commands to the Executor API.
     """
-    battery_level = data['battery']  # Battery level in kWh
-    members = data['members']
-    activable = {}
+    def __init__(self, executor_api: str):
+        self.executor_api = executor_api
 
-    for member_id, consumers in members.items():
-        # Separate urgent and non-urgent consumers
-        urgent_consumers = [
-            consumer for consumer in consumers if consumer['isUrgent']
-        ]
-        non_urgent_consumers = [
-            consumer for consumer in consumers if not consumer['isUrgent']
-        ]
+    def choose_consumers(self, data: dict) -> dict:
+        """
+        Determines which consumers to activate based on:
+          - battery level,
+          - urgency (isUrgent),
+          - difference (delta - tau).
+        :param data: JSON data from the request.
+        :return: Dictionary of activable consumers grouped by member.
+        """
+        battery_level = data['battery']  # Battery in kWh
+        members = data['members']
+        activable = {}
 
-        # Sort urgent consumers by (delta - tau), tight deadlines first
-        urgent_consumers.sort(key=lambda c: c['delta'] - c['tau'])
-        
-        # Sort non-urgent consumers by (delta - tau), tight deadlines first
-        non_urgent_consumers.sort(key=lambda c: c['delta'] - c['tau'])
+        for member_id, consumers in members.items():
+            # Separate urgent consumers from non-urgent consumers
+            urgent_consumers = [consumer for consumer in consumers if consumer.get('isUrgent')]
+            non_urgent_consumers = [consumer for consumer in consumers if not consumer.get('isUrgent')]
 
-        activable[member_id] = []  # Initialize list for this member
+            # Sort urgent consumers by (delta - tau) (tighter schedules are processed first)
+            urgent_consumers.sort(key=lambda c: c['delta'] - c['tau'])
+            # Also sort non-urgent consumers
+            non_urgent_consumers.sort(key=lambda c: c['delta'] - c['tau'])
 
-        # First, process urgent consumers (regardless of battery level)
-        for consumer in urgent_consumers:
-            activable[member_id].append({
-                "consumer_id": consumer["consumer_id"],
-                "action": "activate"
-            })
-            battery_level -= consumer['cons_required']  # Deduct battery usage
+            activable[member_id] = []
 
-        # Then, process non-urgent consumers (if battery is sufficient)
-        for consumer in non_urgent_consumers:
-            if consumer['cons_required'] <= battery_level:
+            # Process urgent consumers first (regardless of battery level)
+            for consumer in urgent_consumers:
                 activable[member_id].append({
                     "consumer_id": consumer["consumer_id"],
                     "action": "activate"
                 })
-                battery_level -= consumer['cons_required']  # Deduct battery usage
+                battery_level -= consumer['cons_required']
 
-    return activable
+            # Then process non-urgent consumers if battery is sufficient
+            for consumer in non_urgent_consumers:
+                if consumer['cons_required'] <= battery_level:
+                    activable[member_id].append({
+                        "consumer_id": consumer["consumer_id"],
+                        "action": "activate"
+                    })
+                    battery_level -= consumer['cons_required']
 
+        debug_print(f"DEBUG: Activable consumers determined: {activable}")
+        return activable
 
-# Function to send activable consumers to the executor via HTTP
-def send_to_executor(activable_consumers):
-    """
-    Send the activable consumers to the executor via HTTP.
-    :param activable_consumers: Dictionary of activable consumers grouped by member
-    """
-    url = f"{EXECUTOR_API}/commands"
-    headers = {'Content-Type': 'application/json'}
-    try:
-        response = requests.post(url, headers=headers, json=activable_consumers)
-        if response.status_code == 200:
-            logging.info("Commands successfully sent to the executor.")
-        else:
-            logging.error(f"Failed to send commands to the executor. Status code: {response.status_code}")
-    except Exception as e:
-        logging.error(f"Error sending commands to the executor: {e}")
+    def send_to_executor(self, activable_consumers: dict) -> None:
+        """
+        Sends the activable consumers to the Executor via an HTTP request.
+        :param activable_consumers: Dictionary of activable consumers grouped by member.
+        """
+        url = f"{self.executor_api}/commands"
+        headers = {'Content-Type': 'application/json'}
+        try:
+            response = requests.post(url, headers=headers, json=activable_consumers)
+            if response.status_code == 200:
+                print("INFO: Commands successfully sent to the executor.", flush=True)
+            else:
+                print(f"ERROR: Failed to send commands to the executor. Status code: {response.status_code}", flush=True)
+        except Exception as e:
+            print(f"ERROR: Error sending commands to the executor: {e}", flush=True)
 
-# Route to handle activable consumers
-@app.post('/activable_consumers')
-def activable_consumers():
-    """
-    Receive a list of consumers that can be activated and determine which ones to activate.
-    """
-    try:
-        data = request.json
-        logging.info(f"Received activable consumers: {data}")
+    def process_request(self, data: dict) -> (int, dict):
+        """
+        Processes the incoming request, validates the data,
+        determines the activable consumers, and sends the commands.
+        :param data: JSON data from the request.
+        :return: A tuple (status_code, response_body).
+        """
+        print(f"INFO: Received activable consumers request: {data}", flush=True)
 
-        # Validate input data
+        # Validate incoming data
         if not data or 'members' not in data or 'battery' not in data:
-            return HTTPResponse(
-                body=json.dumps({"error": "Invalid input data"}),
-                status=400,
-                headers={"Content-Type": "application/json"}
-            )
+            return 400, {"error": "Invalid input data"}
 
-        # Decide which consumers to activate
-        activable = choose_consumers(data)
+        activable = self.choose_consumers(data)
 
-        # If there are activable consumers, send them to the Executor
         if any(activable.values()):
-            send_to_executor(activable)
-            return HTTPResponse(
-                body=json.dumps({"status": "success", "activable": activable}),
-                status=200,
-                headers={"Content-Type": "application/json"}
-            )
+            self.send_to_executor(activable)
+            return 200, {"status": "success", "activable": activable}
         else:
-            return HTTPResponse(
-                body=json.dumps({"status": "no consumers activated"}),
-                status=200,
-                headers={"Content-Type": "application/json"}
-            )
-    except Exception as e:
-        logging.error(f"Error processing request: {e}")
-        return HTTPResponse(
-            body=json.dumps({"error": str(e)}),
-            status=500,
-            headers={"Content-Type": "application/json"}
-        )
+            return 200, {"status": "no consumers activated"}
 
-# Start the Bottle server
+class APIManager:
+    """
+    Manages the API exposed via Bottle.
+    Configures routes and forwards requests to the Planner.
+    """
+    def __init__(self, planner: Planner):
+        self.planner = planner
+        self.app = Bottle()
+        self.setup_routes()
+
+    def setup_routes(self) -> None:
+        @self.app.post('/activable_consumers')
+        def activable_consumers():
+            try:
+                data = request.json
+                status_code, response_body = self.planner.process_request(data)
+                return HTTPResponse(
+                    body=json.dumps(response_body),
+                    status=status_code,
+                    headers={"Content-Type": "application/json"}
+                )
+            except Exception as e:
+                print(f"ERROR: Error processing request: {e}", flush=True)
+                return HTTPResponse(
+                    body=json.dumps({"error": str(e)}),
+                    status=500,
+                    headers={"Content-Type": "application/json"}
+                )
+
+    def run(self) -> None:
+        run(self.app, host="0.0.0.0", port=8080)
+
 if __name__ == "__main__":
-    run(app, host="0.0.0.0", port=8080)
+    planner = Planner(EXECUTOR_API)
+    api_manager = APIManager(planner)
+    api_manager.run()

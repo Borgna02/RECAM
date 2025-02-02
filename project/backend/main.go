@@ -181,8 +181,6 @@ func main() {
 			"tau":         request.Tau,
 			"delta":       request.Delta,
 		})
-
-		
 	})
 
 	// Start the server on port 8080

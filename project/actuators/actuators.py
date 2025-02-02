@@ -1,118 +1,146 @@
 import json
 import os
-
 import requests
 import paho.mqtt.client as mqtt
-import logging
 
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(message)s"
-)
-
-# Abilita il logging per Paho MQTT
-mqtt.logging.basicConfig(level=mqtt.logging.DEBUG)
-mqtt.logging.getLogger("mqtt").setLevel(mqtt.logging.DEBUG)
-
-# Enable Paho MQTT logging
-mqtt_logging = logging.getLogger("mqtt")
-mqtt_logging.setLevel(logging.DEBUG)
-handler = logging.StreamHandler()
-handler.setFormatter(logging.Formatter("[%(asctime)s] %(levelname)s: %(message)s"))
-mqtt_logging.addHandler(handler)
-
-
-
-# MQTT broker configuration
+# MQTT parameters and sensors API configuration using environment variables
 BROKER = os.getenv("BROKER", "broker")
 PORT = int(os.getenv("PORT", 1883))
 MQTT_TOPIC = "/consumer/activation"
 SENSORS_API = os.getenv("SENSORS_API", None)
 
-# Funzione di callback per il reconnect
-def on_connect(client, userdata, flags, rc):
-    if rc == 0:
-        logging.info(f"Connected to MQTT broker {BROKER}:{PORT}")
-        client.subscribe(MQTT_TOPIC, qos=1)
-    else:
-        logging.error(f"Connection failed with result code {rc}")
+class APIManager:
+    """
+    Handles connections with the API.
+    """
+    def __init__(self, base_url: str) -> None:
+        # Removes any trailing slashes to avoid duplications
+        self.base_url = base_url.rstrip('/')
 
-def on_disconnect(client, userdata, rc):
-    if rc != 0:
-        logging.error(f"Unexpected disconnection from MQTT broker. Result code: {rc}")
-    else:
-        logging.info("Disconnected from MQTT broker")
+    def activate_consumer(self, member_id, consumer):
+        """
+        Sends an activation request to the /activate endpoint.
+        """
+        url = f"{self.base_url}/activate"
+        print(
+            f"INFO: Sending activation request to {url} with consumer_id {consumer} and member_id {member_id}",
+            flush=True,
+        )
+        response = requests.get(url, json={"consumer_id": consumer, "member_id": member_id})
+        return response
 
-# MQTT on_message callback
-def on_message(client, userdata, message):
-    try:
-        # Convert bytes to string and parse JSON
-        payload = json.loads(message.payload.decode("utf-8"))
-        logging.info(f"Received message on {message.topic}: {payload}")
+class Actuator:
+    """
+    Represents an actuator capable of executing commands,
+    for example, activating a device via an API.
+    """
+    def __init__(self, sensors_api: APIManager = None) -> None:
+        self.api_manager = sensors_api
 
-        # Check if payload is a dictionary
-        if not isinstance(payload, dict):
-            logging.error("Payload is not a dictionary")
-            raise ValueError("Payload is not a dictionary")
+    def activate(self, member_id, consumer) -> None:
+        print(f"INFO: Activating consumer {consumer} of member {member_id}", flush=True)
+        if self.api_manager:
+            try:
+                response = self.api_manager.activate_consumer(member_id, consumer)
+                if response.status_code == 200:
+                    print(
+                        f"INFO: Successfully sent activation to sensors API: {member_id} {consumer}",
+                        flush=True,
+                    )
+                else:
+                    print(
+                        f"ERROR: Failed to activate consumer {consumer} for member {member_id}: "
+                        f"{response.status_code} {response.text}",
+                        flush=True,
+                    )
+            except requests.RequestException as e:
+                print(f"ERROR: Error sending request to sensors API: {e}", flush=True)
+            except Exception as e:
+                print(f"ERROR: Error activating consumer: {e}", flush=True)
+        else:
+            print("ERROR: SENSORS_API is not configured", flush=True)
 
-        # Extract member_id and consumer_id from payload
-        member_id = payload.get("member_id")
-        consumer_id = payload.get("consumer_id")
-        action = payload.get("action")
+class MQTTManager:
+    """
+    Manages the MQTT connection, message reception, and distribution
+    of commands to the actuator.
+    """
+    def __init__(self, broker: str, port: int, topic: str, actuator: Actuator) -> None:
+        self.broker = broker
+        self.port = port
+        self.topic = topic
+        self.actuator = actuator
 
-        if not all([member_id, consumer_id, action]):
-            raise ValueError("Missing required fields in payload")
+        self.client = mqtt.Client(client_id="consumer", clean_session=False)
+        self.client.on_connect = self.on_connect
+        self.client.on_disconnect = self.on_disconnect
+        self.client.on_message = self.on_message
 
-        # Process the command (e.g., turn on/off a device)
-        process_command(member_id, consumer_id)
+    def on_connect(self, client, userdata, flags, rc) -> None:
+        if rc == 0:
+            print(f"INFO: Connected to MQTT broker {self.broker}:{self.port}", flush=True)
+            client.subscribe(self.topic, qos=1)
+        else:
+            print(f"ERROR: Connection failed with result code {rc}", flush=True)
 
-    except json.JSONDecodeError:
-        logging.error("Received invalid JSON payload")
-    except ValueError as e:
-        logging.error(f"Invalid message format: {e}")
-    except Exception as e:
-        logging.error(f"Error processing MQTT message: {e}")
+    def on_disconnect(self, client, userdata, rc) -> None:
+        if rc != 0:
+            print(f"ERROR: Unexpected disconnection from MQTT broker. Result code: {rc}", flush=True)
+        else:
+            print("INFO: Disconnected from MQTT broker", flush=True)
 
-# Function to process a command
-def process_command(member_id, consumer):
-    logging.info(f"Activating consumer {consumer} of member {member_id}")
-    if SENSORS_API:
+    def on_message(self, client, userdata, message) -> None:
         try:
-            response = requests.get(f"{SENSORS_API}/activate", json={"consumer_id": consumer, "member_id": member_id})
-            if response.status_code == 200:
-                logging.info(f"Successfully sent activation to sensors api: {member_id} {consumer}")
-            else:
-                logging.error(f"Failed to activate consumer {consumer} for member {member_id}: {response.status_code} {response.text}")
-        except requests.RequestException as e:
-            logging.error(f"Error sending request to {SENSORS_API}/activate: {e}")
-        except Exception as e:
-            logging.error(f"Error activating consumer: {e}")
-    else:
-        logging.error("SENSORS_API is not configured")
+            # Decodes the payload and converts it from JSON to a dictionary
+            payload = json.loads(message.payload.decode("utf-8"))
+            print(f"INFO: Received message on {message.topic}: {payload}", flush=True)
 
-# Set up MQTT client
-def setup_mqtt_client():
-    client = mqtt.Client(client_id=f"consumer", clean_session=False)
-    client.on_message = on_message
-    client.on_connect = on_connect
-    client.on_disconnect = on_disconnect
+            if not isinstance(payload, dict):
+                print("ERROR: Payload is not a dictionary", flush=True)
+                raise ValueError("Payload is not a dictionary")
+
+            # Extracts the necessary parameters
+            member_id = payload.get("member_id")
+            consumer_id = payload.get("consumer_id")
+            action = payload.get("action")
+
+            if not all([member_id, consumer_id, action]):
+                raise ValueError("Missing required fields in payload")
+
+            # Executes the command via the actuator
+            self.actuator.activate(member_id, consumer_id)
+
+        except json.JSONDecodeError:
+            print("ERROR: Received invalid JSON payload", flush=True)
+        except ValueError as e:
+            print(f"ERROR: Invalid message format: {e}", flush=True)
+        except Exception as e:
+            print(f"ERROR: Error processing MQTT message: {e}", flush=True)
+
+    def connect(self) -> None:
+        try:
+            self.client.connect(self.broker, self.port, keepalive=30)
+        except Exception as e:
+            print(f"ERROR: Failed to connect to MQTT broker: {e}", flush=True)
+            raise
+
+    def loop_forever(self) -> None:
+        self.client.loop_forever()
+
+def main() -> None:
+    sensors_api = APIManager(SENSORS_API)
+    actuator = Actuator(sensors_api)
+    publisher = MQTTManager(BROKER, PORT, MQTT_TOPIC, actuator)
 
     try:
-        client.connect(BROKER, PORT, keepalive=30)
-        return client
+        publisher.connect()
+        publisher.loop_forever()
+    except KeyboardInterrupt:
+        print("INFO: Subscriber stopped by user", flush=True)
+        publisher.client.disconnect()
     except Exception as e:
-        logging.error(f"Failed to connect to MQTT broker: {e}")
-        raise
+        print(f"ERROR: Subscriber failed to start: {e}", flush=True)
 
 # Run the actuator
 if __name__ == "__main__":
-    # Set up MQTT client
-    try:
-        client = setup_mqtt_client()
-        client.loop_forever()
-    except KeyboardInterrupt:
-        logging.info("Subscriber stopped by user")
-        client.disconnect()
-    except Exception as e:
-        logging.error(f"Subscriber failed to start: {e}")
+    main()
